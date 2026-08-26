@@ -13,6 +13,66 @@ class ReportViewSet(viewsets.ModelViewSet):
     serializer_class = ReportSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        return Report.objects.filter(sender_email=self.request.user.email).order_by("-created_at")
+
+
+class UploadView(APIView):
+    permission_classes = [IsAuthenticated]
+    MAX_FILE_SIZE = 20 * 1024 * 1024
+    ALLOWED_TYPES = [".csv", ".xlsx", ".xls"]
+
+    def post(self, request):
+        file = request.FILES.get("file")
+        if not file:
+            return Response(
+                {"error": "Aucun fichier fourni."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        ext = "." + file.name.rsplit(".", 1)[-1].lower() if "." in file.name else ""
+        if ext not in self.ALLOWED_TYPES:
+            return Response(
+                {"error": f"Format non supporté. Formats acceptés : {', '.join(self.ALLOWED_TYPES)}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if file.size > self.MAX_FILE_SIZE:
+            return Response(
+                {"error": f"Fichier trop volumineux. Taille maximale : {self.MAX_FILE_SIZE // (1024*1024)} Mo."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        title = request.data.get("title", "").strip() or file.name.rsplit(".", 1)[0]
+
+        report = Report.objects.create(
+            title=title,
+            sender_email=request.user.email,
+            file_size=file.size,
+            status=Report.Status.PENDING,
+        )
+
+        from reports.models import DataFile
+        DataFile.objects.create(
+            report=report,
+            file=file,
+            original_filename=file.name,
+            file_type=ext.lstrip("."),
+        )
+
+        from .tasks import process_report
+        process_report.delay(str(report.id))
+
+        return Response(
+            {
+                "id": str(report.id),
+                "dashboard_link": str(report.dashboard_link),
+                "status": report.status,
+                "message": "Fichier uploadé. Traitement en cours...",
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
 
 class DashboardView(APIView):
     permission_classes = [AllowAny]
@@ -99,3 +159,35 @@ def _generate_kpis(report):
                     "variation": variation,
                 })
     return kpis
+
+
+class StatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_reports = Report.objects.filter(sender_email=request.user.email)
+        total = user_reports.count()
+        completed = user_reports.filter(status=Report.Status.COMPLETED).count()
+        failed = user_reports.filter(status=Report.Status.FAILED).count()
+        processing = total - completed - failed
+        total_size = sum(r.file_size or 0 for r in user_reports)
+        recent = user_reports.order_by("-created_at")[:5]
+
+        return Response({
+            "total": total,
+            "completed": completed,
+            "failed": failed,
+            "processing": processing,
+            "total_size_bytes": total_size,
+            "recent_reports": [
+                {
+                    "id": str(r.id),
+                    "title": r.title,
+                    "status": r.status,
+                    "created_at": r.created_at.isoformat(),
+                    "row_count": r.row_count,
+                    "dashboard_link": str(r.dashboard_link),
+                }
+                for r in recent
+            ],
+        })
