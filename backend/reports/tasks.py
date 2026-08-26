@@ -108,14 +108,9 @@ def process_report(self, report_id):
         # 5. Call LLM
         try:
             llm_response = call_llm(system_prompt, user_prompt)
-        except openai.APITimeoutError:
-            raise LLMTimeoutError()
-        except openai.APIStatusError as exc:
-            if exc.status_code >= 500:
-                raise LLMTimeoutError() from exc
-            raise FileCorruptedError(detail=f"Erreur API LLM: {exc.status_code}") from exc
-        except (ValueError, KeyError) as exc:
-            raise LLMFormatError(detail=str(exc)) from exc
+        except (openai.APITimeoutError, openai.APIStatusError, ValueError, KeyError):
+            logger.warning("LLM failed for report %s, using heuristic fallback", report_id)
+            llm_response = _generate_heuristic_insights(parse_result, cleaned_df)
 
         report.llm_insights = llm_response
 
@@ -148,3 +143,45 @@ def process_report(self, report_id):
         if not isinstance(exc, (FileFormatError, FileCorruptedError, NoColumnsError)):
             raise self.retry(exc=exc)
         return {"status": "failed", "report_id": str(report_id)}
+
+
+def _generate_heuristic_insights(parse_result, df):
+    insights = []
+    num_cols = [c for c in df.columns if df[c].dtype in ("int64", "float64")]
+    cat_cols = [c for c in df.columns if df[c].dtype == "object"]
+
+    if num_cols:
+        col = num_cols[0]
+        total = df[col].sum()
+        mean = df[col].mean()
+        insights.append({
+            "title": f"Analyse de {col}",
+            "description": f"La somme totale de {col} est {total:,.2f} avec une moyenne de {mean:,.2f}.",
+            "sentiment": "neutral",
+        })
+
+    if len(num_cols) >= 2:
+        c1, c2 = num_cols[0], num_cols[1]
+        corr = df[c1].corr(df[c2])
+        if abs(corr) > 0.5:
+            sentiment = "positive" if corr > 0 else "negative"
+            insights.append({
+                "title": f"Corrélation {c1} / {c2}",
+                "description": f"Corrélation de {corr:.2f} entre {c1} et {c2}.",
+                "sentiment": sentiment,
+            })
+
+    if cat_cols:
+        col = cat_cols[0]
+        top = df[col].value_counts().head(3)
+        top_str = ", ".join([f"{k} ({v})" for k, v in top.items()])
+        insights.append({
+            "title": f"Top valeurs — {col}",
+            "description": f"Les valeurs les plus fréquentes : {top_str}.",
+            "sentiment": "neutral",
+        })
+
+    return {
+        "insights": insights if insights else [{"title": "Analyse basique", "description": "Données analysées automatiquement.", "sentiment": "neutral"}],
+        "summary": "Analyse heuristique (LLM non disponible). Les insights sont basés sur des règles statistiques de base.",
+    }

@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -6,6 +7,7 @@ from rest_framework.views import APIView
 from .models import Report
 from .serializers import ReportSerializer
 from .services.cache_service import get_cached_dashboard, set_cached_dashboard
+from .services.pdf_generator import generate_report_pdf
 
 
 class ReportViewSet(viewsets.ModelViewSet):
@@ -191,3 +193,22 @@ class StatsView(APIView):
                 for r in recent
             ],
         })
+
+
+class ReportPDFView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, dashboard_uuid):
+        report = get_object_or_404(Report, dashboard_link=dashboard_uuid)
+        if report.status != Report.Status.COMPLETED:
+            return Response(
+                {"error": "Le rapport n'est pas encore terminé."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        pdf_response = generate_report_pdf(report)
+        if pdf_response is None:
+            return Response(
+                {"error": "Erreur lors de la génération du PDF."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+        return pdf_response
