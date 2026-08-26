@@ -4,7 +4,12 @@ import { register } from "../services/api.js";
 import { useAuth } from "../contexts/AuthContext.jsx";
 
 export default function RegisterPage() {
-  const [form, setForm] = useState({ username: "", email: "", password: "", password_confirm: "" });
+  const [form, setForm] = useState({
+    username: "",
+    email: "",
+    password: "",
+    password_confirm: "",
+  });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { setUser } = useAuth();
@@ -35,16 +40,16 @@ export default function RegisterPage() {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-logo">
-          <img src="/logo.svg" alt="Dashbail" className="auth-logo-img" />
+          <img src="/logo-icon.svg" alt="" className="auth-logo-img" />
         </div>
-        <h1 className="auth-title">Créer un compte</h1>
-        <p className="auth-subtitle">Rejoignez Dashbail en quelques secondes</p>
+        <h1 className="auth-title">Creer un compte</h1>
+        <p className="auth-subtitle">Rejoignez dashbail en 30 secondes</p>
 
         {error && <div className="auth-error">{error}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="username">Nom d'utilisateur</label>
+            <label htmlFor="username">Pseudo</label>
             <input
               id="username"
               name="username"
@@ -75,30 +80,37 @@ export default function RegisterPage() {
               type="password"
               value={form.password}
               onChange={handleChange}
-              placeholder="8 caractères minimum"
+              placeholder="8 caracteres minimum"
               minLength={8}
               required
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password_confirm">Confirmer le mot de passe</label>
+            <label htmlFor="password_confirm">Confirmer</label>
             <input
               id="password_confirm"
               name="password_confirm"
               type="password"
               value={form.password_confirm}
               onChange={handleChange}
-              placeholder="Retapez votre mot de passe"
+              placeholder="Retapez le mot de passe"
               required
             />
           </div>
           <button type="submit" className="btn btn-primary btn-full" disabled={loading}>
-            {loading ? "Création..." : "Créer mon compte"}
+            {loading ? (
+              <span className="btn-loading">
+                <span className="spinner-small" />
+                Creation...
+              </span>
+            ) : (
+              "Creer mon compte"
+            )}
           </button>
         </form>
 
         <p className="auth-footer">
-          Déjà un compte ?{" "}
+          Deja un compte ?{" "}
           <Link to="/login" className="auth-link">
             Se connecter
           </Link>

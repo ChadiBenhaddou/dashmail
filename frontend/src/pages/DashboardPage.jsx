@@ -84,25 +84,27 @@ function DashboardPage() {
     <>
       <header className="dashboard-header" role="banner">
         <div className="dashboard-header-logo">
-          <img src="/logo.svg" alt="Dashbail" className="dashboard-header-logo-img" />
-          <span className="dashboard-header-title">Dashbail</span>
+          <img src="/logo-icon.svg" alt="" className="dashboard-header-logo-img" />
+          <span className="dashboard-header-title">dashbail</span>
         </div>
         <div className="dashboard-header-right">
           <div className="dashboard-header-status">
             <span className="dashboard-header-dot" aria-hidden="true" />
-            <span className="dashboard-header-status-text">Rapport prêt</span>
+            <span>pret</span>
           </div>
           <button className="btn btn-secondary btn-sm" onClick={copyLink}>
-            {copied ? "✓ Copié !" : "Partager"}
+            {copied ? "Copie !" : "Partager"}
           </button>
-          <Link to="/upload" className="btn btn-secondary btn-sm">Nouvelle analyse</Link>
+          <Link to="/upload" className="btn btn-accent btn-sm">
+            + Nouvelle analyse
+          </Link>
         </div>
       </header>
 
       <main className="dashboard" role="main">
         <ReportHeader report={report} />
 
-        <section className="kpi-grid" aria-label="Indicateurs clés">
+        <section className="kpi-grid" aria-label="Indicateurs cles">
           {report.kpis?.map((kpi, i) => (
             <KPICard key={i} {...kpi} />
           ))}
@@ -116,17 +118,25 @@ function DashboardPage() {
           ))}
         </section>
 
-        <section className="bottom-grid" aria-label="Analyses et qualité">
+        <section className="bottom-grid" aria-label="Analyses et qualite">
           {report.insights && <InsightList insights={report.insights} />}
           {report.data_quality && <DataQuality {...report.data_quality} />}
         </section>
       </main>
 
       <footer className="dashboard-footer" role="contentinfo">
-        <p className="dashboard-footer-text">Généré automatiquement par Dashbail</p>
-        <nav className="dashboard-footer-links" aria-label="Actions du rapport">
-          {report.download_url && <a href={report.download_url} download>Télécharger le fichier</a>}
-          <span className="footer-sep" aria-hidden="true">·</span>
+        <p className="dashboard-footer-text">
+          Genere automatiquement par dashbail
+        </p>
+        <nav className="dashboard-footer-links" aria-label="Actions">
+          {report.download_url && (
+            <a href={report.download_url} download>
+              Telecharger
+            </a>
+          )}
+          <span className="footer-sep" aria-hidden="true">
+            ·
+          </span>
           <Link to="/upload">Nouvelle analyse</Link>
         </nav>
       </footer>

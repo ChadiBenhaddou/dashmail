@@ -1,13 +1,16 @@
 function InsightList({ insights }) {
   return (
-    <div className="card insight-list" aria-label="Insights de l'analyse IA">
-      <div className="insight-header">
+    <div className="card" style={{ padding: "20px" }} aria-label="Insights IA">
+      <div style={{ marginBottom: "14px" }}>
         <span className="badge badge-ai">Analyse IA</span>
       </div>
-      <ol className="insights-ol">
+      <ul className="insight-list">
         {insights.map((insight, i) => (
-          <li key={i} className={`insight-item ${insight.sentiment === "negative" ? "insight-negative" : ""}`}>
-            <span className={`insight-number ${insight.sentiment === "negative" ? "number-negative" : "number-positive"}`} aria-hidden="true">
+          <li
+            key={i}
+            className={`insight-item ${insight.sentiment === "negative" ? "negative" : "positive"}`}
+          >
+            <span className="insight-num">
               {String(i + 1).padStart(2, "0")}
             </span>
             <div>
@@ -16,7 +19,7 @@ function InsightList({ insights }) {
             </div>
           </li>
         ))}
-      </ol>
+      </ul>
     </div>
   );
 }

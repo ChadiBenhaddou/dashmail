@@ -30,10 +30,10 @@ export default function LoginPage() {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-logo">
-          <img src="/logo.svg" alt="Dashbail" className="auth-logo-img" />
+          <img src="/logo-icon.svg" alt="" className="auth-logo-img" />
         </div>
-        <h1 className="auth-title">Connexion</h1>
-        <p className="auth-subtitle">Accédez à votre tableau de bord</p>
+        <h1 className="auth-title">Bon retour</h1>
+        <p className="auth-subtitle">Connectez-vous pour acceder a vos rapports</p>
 
         {error && <div className="auth-error">{error}</div>}
 
@@ -56,19 +56,26 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
+              placeholder="********"
               required
             />
           </div>
           <button type="submit" className="btn btn-primary btn-full" disabled={loading}>
-            {loading ? "Connexion..." : "Se connecter"}
+            {loading ? (
+              <span className="btn-loading">
+                <span className="spinner-small" />
+                Connexion...
+              </span>
+            ) : (
+              "Se connecter"
+            )}
           </button>
         </form>
 
         <p className="auth-footer">
           Pas encore de compte ?{" "}
           <Link to="/register" className="auth-link">
-            Créer un compte
+            Creer un compte
           </Link>
         </p>
       </div>

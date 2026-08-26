@@ -15,17 +15,21 @@ export default function UploadPage() {
   const MAX_SIZE = 20 * 1024 * 1024;
 
   const validate = (f) => {
-    if (!f) return "Aucun fichier sélectionné.";
+    if (!f) return "Aucun fichier selectionne.";
     const ext = "." + f.name.split(".").pop().toLowerCase();
-    if (!ACCEPTED.includes(ext)) return `Format non supporté. Formats acceptés : ${ACCEPTED.join(", ")}`;
-    if (f.size > MAX_SIZE) return `Fichier trop volumineux. Taille maximale : 20 Mo.`;
+    if (!ACCEPTED.includes(ext))
+      return `Format non supporte. ${ACCEPTED.join(", ")} acceptes.`;
+    if (f.size > MAX_SIZE) return "Fichier trop lourd. 20 Mo max.";
     return null;
   };
 
   const handleFile = (f) => {
     setError("");
     const err = validate(f);
-    if (err) { setError(err); return; }
+    if (err) {
+      setError(err);
+      return;
+    }
     setFile(f);
     if (!title) setTitle(f.name.replace(/\.[^.]+$/, ""));
   };
@@ -38,12 +42,17 @@ export default function UploadPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!file) { setError("Sélectionnez un fichier."); return; }
+    if (!file) {
+      setError("Selectionnez un fichier.");
+      return;
+    }
     setUploading(true);
     setError("");
     try {
       const res = await uploadFile(file, title);
-      navigate(`/dashboard/${res.dashboard_link}`, { state: { processing: true } });
+      navigate(`/dashboard/${res.dashboard_link}`, {
+        state: { processing: true },
+      });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -55,14 +64,21 @@ export default function UploadPage() {
     <div className="upload-page">
       <div className="upload-card">
         <h1 className="upload-title">Analyser un fichier</h1>
-        <p className="upload-subtitle">Uploadez votre CSV ou Excel et recevez un dashboard automatique</p>
+        <p className="upload-subtitle">
+          CSV ou Excel — on s'occupe du reste
+        </p>
 
         {error && <div className="auth-error">{error}</div>}
 
         <form onSubmit={handleSubmit} className="upload-form">
           <div
-            className={`upload-zone ${dragActive ? "upload-zone-active" : ""} ${file ? "upload-zone-filled" : ""}`}
-            onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
+            className={`upload-zone ${dragActive ? "upload-zone-active" : ""} ${
+              file ? "upload-zone-filled" : ""
+            }`}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragActive(true);
+            }}
             onDragLeave={() => setDragActive(false)}
             onDrop={handleDrop}
             onClick={() => inputRef.current?.click()}
@@ -76,21 +92,46 @@ export default function UploadPage() {
             />
             {file ? (
               <div className="upload-file-info">
-                <div className="upload-file-icon">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                </div>
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="var(--c-green)"
+                  strokeWidth="2"
+                >
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
                 <span className="upload-file-name">{file.name}</span>
-                <span className="upload-file-size">{(file.size / 1024).toFixed(1)} Ko</span>
-                <button type="button" className="upload-remove" onClick={(e) => { e.stopPropagation(); setFile(null); setError(""); }}>
+                <span className="upload-file-size">
+                  {(file.size / 1024).toFixed(1)} Ko
+                </span>
+                <button
+                  type="button"
+                  className="upload-remove"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setFile(null);
+                    setError("");
+                  }}
+                >
                   Retirer
                 </button>
               </div>
             ) : (
               <div className="upload-placeholder">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="1.5">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="17 8 12 3 7 8"/>
-                  <line x1="12" y1="3" x2="12" y2="15"/>
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="var(--c-ink-faint)"
+                  strokeWidth="1.5"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
                 </svg>
                 <p className="upload-text">Glissez votre fichier ici</p>
                 <p className="upload-hint">ou cliquez pour parcourir</p>
@@ -100,7 +141,7 @@ export default function UploadPage() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="title">Titre du rapport</label>
+            <label htmlFor="title">Nom du rapport</label>
             <input
               id="title"
               type="text"
@@ -110,7 +151,11 @@ export default function UploadPage() {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary btn-full" disabled={uploading || !file}>
+          <button
+            type="submit"
+            className="btn btn-primary btn-full"
+            disabled={uploading || !file}
+          >
             {uploading ? (
               <span className="btn-loading">
                 <span className="spinner-small" />

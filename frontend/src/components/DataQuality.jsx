@@ -1,15 +1,29 @@
 function DataQuality({ score, label, badge, description }) {
+  const color =
+    score >= 80
+      ? "var(--c-green)"
+      : score >= 50
+      ? "var(--c-ember)"
+      : "var(--c-red)";
+
   return (
-    <div className="card data-quality" role="figure" aria-label={`Qualité des données: ${score} pour cent`}>
-      <div className="dq-score" aria-hidden="true">{score}</div>
-      <div className="dq-bar-wrap" role="progressbar" aria-valuenow={score} aria-valuemin={0} aria-valuemax={100} aria-label={`Score de qualité: ${score}%`}>
-        <div className="dq-bar" style={{ width: `${score}%` }} />
+    <div className="card dq-card" role="figure" aria-label={`Qualite: ${score}%`}>
+      <div className="dq-score">{score}</div>
+      <div className="dq-bar">
+        <div
+          className="dq-bar-fill"
+          style={{ width: `${score}%`, background: color }}
+        />
       </div>
-      <div className="dq-row">
+      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
         <span className="dq-label">{label || "Excellent"}</span>
         {badge && <span className="badge badge-success">{badge}</span>}
       </div>
-      {description && <p className="dq-desc">{description}</p>}
+      {description && (
+        <p className="dq-log" style={{ marginTop: "10px" }}>
+          {description}
+        </p>
+      )}
     </div>
   );
 }

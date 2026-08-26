@@ -12,31 +12,38 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  Label,
 } from "recharts";
 
 const COLORS = {
-  primary: "#4F46E5",
-  positive: "#10B981",
-  negative: "#EF4444",
-  neutral: ["#6B7280", "#9CA3AF", "#D1D5DB", "#E5E7EB", "#374151", "#4B5563"],
+  primary: "#E8853D",
+  positive: "#3DAA6D",
+  negative: "#D94F4F",
+  palette: ["#E8853D", "#2ABFBF", "#3DAA6D", "#D94F4F", "#1A1A2E", "#FF6B4A", "#B0B0BE"],
 };
 
 function formatValue(value) {
   if (typeof value !== "number") return value;
-  if (Math.abs(value) >= 1000) {
-    return `${(value / 1000).toFixed(1)}k`;
-  }
+  if (Math.abs(value) >= 1000) return `${(value / 1000).toFixed(1)}k`;
   return value;
 }
 
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="chart-tooltip">
-      <p className="tooltip-label">{label}</p>
+    <div
+      style={{
+        background: "var(--c-sheet)",
+        border: "1px solid var(--c-border)",
+        borderRadius: "var(--r-xs)",
+        padding: "8px 12px",
+        fontSize: "12px",
+        fontFamily: "var(--font-display)",
+        boxShadow: "var(--shadow-sm)",
+      }}
+    >
+      <p style={{ color: "var(--c-ink-muted)", margin: "0 0 4px" }}>{label}</p>
       {payload.map((entry, i) => (
-        <p key={i} style={{ color: entry.color }}>
+        <p key={i} style={{ color: entry.color, margin: 0, fontWeight: 600 }}>
           {entry.name}: {typeof entry.value === "number" ? entry.value.toLocaleString() : entry.value}
         </p>
       ))}
@@ -47,19 +54,19 @@ function CustomTooltip({ active, payload, label }) {
 function LineChartView({ data, xAxisKey, yAxisKey, colors }) {
   const stroke = colors?.[0] || COLORS.primary;
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={280}>
       <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-        <XAxis dataKey={xAxisKey} tick={{ fontSize: 12 }} stroke="#9CA3AF" />
-        <YAxis tickFormatter={formatValue} tick={{ fontSize: 12 }} stroke="#9CA3AF" />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--c-border)" />
+        <XAxis dataKey={xAxisKey} tick={{ fontSize: 11, fill: "var(--c-ink-muted)" }} stroke="var(--c-border)" />
+        <YAxis tickFormatter={formatValue} tick={{ fontSize: 11, fill: "var(--c-ink-muted)" }} stroke="var(--c-border)" />
         <Tooltip content={<CustomTooltip />} />
         <Line
           type="monotone"
           dataKey={yAxisKey}
           stroke={stroke}
           strokeWidth={2}
-          dot={{ r: 4, fill: stroke }}
-          activeDot={{ r: 6 }}
+          dot={{ r: 3, fill: stroke, strokeWidth: 0 }}
+          activeDot={{ r: 5 }}
         />
       </LineChart>
     </ResponsiveContainer>
@@ -69,24 +76,24 @@ function LineChartView({ data, xAxisKey, yAxisKey, colors }) {
 function BarChartView({ data, xAxisKey, yAxisKey, colors, horizontal }) {
   const fill = colors?.[0] || COLORS.primary;
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={280}>
       <BarChart data={data} layout={horizontal ? "vertical" : "horizontal"}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--c-border)" />
         {horizontal ? (
           <>
-            <XAxis type="number" tick={{ fontSize: 12 }} stroke="#9CA3AF" />
-            <YAxis dataKey={xAxisKey} type="category" tick={{ fontSize: 12 }} stroke="#9CA3AF" width={80} />
+            <XAxis type="number" tick={{ fontSize: 11, fill: "var(--c-ink-muted)" }} stroke="var(--c-border)" />
+            <YAxis dataKey={xAxisKey} type="category" tick={{ fontSize: 11, fill: "var(--c-ink-muted)" }} stroke="var(--c-border)" width={80} />
           </>
         ) : (
           <>
-            <XAxis dataKey={xAxisKey} tick={{ fontSize: 12 }} stroke="#9CA3AF" />
-            <YAxis tick={{ fontSize: 12 }} stroke="#9CA3AF" />
+            <XAxis dataKey={xAxisKey} tick={{ fontSize: 11, fill: "var(--c-ink-muted)" }} stroke="var(--c-border)" />
+            <YAxis tick={{ fontSize: 11, fill: "var(--c-ink-muted)" }} stroke="var(--c-border)" />
           </>
         )}
         <Tooltip content={<CustomTooltip />} />
-        <Bar dataKey={yAxisKey} fill={fill} radius={[4, 4, 0, 0]} label={{ position: "top", fontSize: 11, fill: "#6B7280" }}>
+        <Bar dataKey={yAxisKey} fill={fill} radius={[4, 4, 0, 0]}>
           {data.map((_, i) => (
-            <Cell key={i} fill={colors?.[i % colors.length] || fill} />
+            <Cell key={i} fill={colors?.[i % colors.length] || COLORS.palette[i % COLORS.palette.length]} />
           ))}
         </Bar>
       </BarChart>
@@ -95,17 +102,19 @@ function BarChartView({ data, xAxisKey, yAxisKey, colors, horizontal }) {
 }
 
 function PieChartView({ data, xAxisKey, yAxisKey, colors }) {
-  const palette = colors?.length ? colors : [COLORS.primary, COLORS.positive, COLORS.negative, ...COLORS.neutral];
+  const palette = colors?.length ? colors : COLORS.palette;
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={280}>
       <PieChart>
         <Pie
           data={data}
           cx="50%"
           cy="50%"
-          outerRadius={100}
+          outerRadius={90}
+          innerRadius={50}
           dataKey={yAxisKey}
           nameKey={xAxisKey}
+          paddingAngle={3}
           label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
         >
           {data.map((_, i) => (
@@ -127,11 +136,16 @@ const CHART_MAP = {
 
 function ChartRenderer({ type, data, title, xAxisKey, yAxisKey, colors, horizontal }) {
   const ChartComponent = CHART_MAP[type];
-  if (!ChartComponent) return <p>Type de graphique non supporté: {type}</p>;
+  if (!ChartComponent)
+    return (
+      <p style={{ color: "var(--c-ink-muted)", fontSize: "13px" }}>
+        Type non supporte: {type}
+      </p>
+    );
 
   return (
-    <div className="chart-wrapper">
-      {title && <h3 className="chart-title">{title}</h3>}
+    <div>
+      {title && <h3 className="card-title">{title}</h3>}
       <ChartComponent data={data} xAxisKey={xAxisKey} yAxisKey={yAxisKey} colors={colors} horizontal={horizontal} />
     </div>
   );

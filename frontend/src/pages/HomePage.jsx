@@ -3,34 +3,40 @@ import { motion } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext.jsx";
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i = 0) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.5, ease: "easeOut" } }),
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.08, duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] },
+  }),
 };
 
 const FEATURES = [
-  { icon: "📊", title: "Analyse IA", desc: "OpenAI analyse automatiquement vos données et génère des insights pertinents." },
-  { icon: "📈", title: "Graphiques auto", desc: "Des visualisations professionnelles créées automatiquement à partir de vos CSV/Excel." },
-  { icon: "⚡", title: "Sans inscription", desc: "Envoyez votre fichier par email ou uploadez-le, le dashboard est prêt en secondes." },
-  { icon: "📧", title: "Notification email", desc: "Recevez un lien vers votre dashboard par email dès que l'analyse est terminée." },
-  { icon: "📄", title: "Export PDF", desc: "Téléchargez vos rapports et graphiques en PDF pour les partager." },
-  { icon: "🔒", title: "Sécurisé", desc: "Vos données sont chiffrées et supprimées automatiquement après traitement." },
+  {
+    icon: "01",
+    title: "Envoyez vos donnees",
+    desc: "Un CSV, un Excel — glissez-deposez ou envoyez par email. On s'occupe du reste.",
+  },
+  {
+    icon: "02",
+    title: "L'IA fait le gros oeuvre",
+    desc: "Nettoyage, detection de patterns, insights pertinents. Tout est automatise.",
+  },
+  {
+    icon: "03",
+    title: "Dashboard pret",
+    desc: "Graphiques, KPIs, qualite des donnees. Partageable en un clic.",
+  },
 ];
 
-const STEPS = [
-  { num: "1", title: "Envoyez votre fichier", desc: "Par email en pièce jointe ou via notre interface d'upload." },
-  { num: "2", title: "L'IA analyse vos données", desc: "Nettoyage, détection de patterns, et génération d'insights automatiques." },
-  { num: "3", title: "Recevez votre dashboard", desc: "Graphiques, KPIs, et analyses prêts à partager en un clic." },
-];
-
-const TECHS = [
-  { name: "Django", color: "#092E20" },
-  { name: "React", color: "#61DAFB" },
-  { name: "PostgreSQL", color: "#4169E1" },
-  { name: "Redis", color: "#DC382D" },
-  { name: "Celery", color: "#A9CC54" },
-  { name: "OpenAI", color: "#10A37F" },
-  { name: "Docker", color: "#2496ED" },
-  { name: "Recharts", color: "#FF6B6B" },
+const TOOLS = [
+  { name: "Django", dot: "#0C4B33" },
+  { name: "React", dot: "#61DAFB" },
+  { name: "PostgreSQL", dot: "#336791" },
+  { name: "Redis", dot: "#DC382D" },
+  { name: "Celery", dot: "#A9CC54" },
+  { name: "OpenAI", dot: "#10A37F" },
+  { name: "Docker", dot: "#2496ED" },
 ];
 
 export default function HomePage() {
@@ -38,50 +44,112 @@ export default function HomePage() {
 
   return (
     <div className="landing">
-      {/* Hero */}
+      {/* Hero — asymmetric */}
       <section className="landing-hero">
-        <motion.div className="landing-hero-content" initial="hidden" animate="visible" variants={fadeUp}>
+        <motion.div
+          className="landing-hero-content"
+          initial="hidden"
+          animate="visible"
+          variants={fadeUp}
+        >
           <motion.div className="landing-hero-badge" variants={fadeUp} custom={0}>
-            Propulsé par l'intelligence artificielle
+            propulse par l'ia
           </motion.div>
+
           <motion.h1 className="landing-hero-title" variants={fadeUp} custom={1}>
-            Transformez vos données en{" "}
-            <span className="landing-hero-highlight">dashboards automatiques</span>
+            Vos donnees merite{"\n"}
+            <span className="landing-hero-highlight">meilleur qu'un tableur</span>
           </motion.h1>
-          <motion.p className="landing-hero-subtitle" variants={fadeUp} custom={2}>
-            Envoyez un fichier CSV ou Excel par email ou uploadez-le directement.
-            Notre IA génère un dashboard professionnel avec graphiques, KPIs et insights en quelques secondes.
+
+          <motion.p
+            className="landing-hero-subtitle"
+            variants={fadeUp}
+            custom={2}
+          >
+            Uploadez un fichier ou envoyez-le par email. Dashbail analyse,
+            nettoie et transforme vos donnees en un dashboard complet avec
+            graphiques, KPIs et insights — en quelques secondes.
           </motion.p>
+
           <motion.div className="landing-hero-actions" variants={fadeUp} custom={3}>
-            <Link to={isAuthenticated ? "/upload" : "/register"} className="btn btn-primary btn-lg">
-              Commencer gratuitement
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <Link
+              to={isAuthenticated ? "/upload" : "/register"}
+              className="btn btn-accent btn-lg"
+            >
+              Essayer maintenant
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
             </Link>
-            <a href="#how-it-works" className="btn btn-secondary">En savoir plus</a>
+            <a href="#how" className="btn btn-secondary">
+              Comment ca marche
+            </a>
           </motion.div>
         </motion.div>
 
         <motion.div
           className="landing-hero-visual"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35, duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
           <div className="landing-hero-mockup">
             <div className="mockup-header">
-              <div className="mockup-dots"><span /><span /><span /></div>
+              <div className="mockup-dots">
+                <span />
+                <span />
+                <span />
+              </div>
               <div className="mockup-url">dashbail.app/dashboard/...</div>
             </div>
             <div className="mockup-body">
               <div className="mockup-kpi-row">
-                <div className="mockup-kpi"><div className="mockup-kpi-val">1,250</div><div className="mockup-kpi-label">Lignes analysées</div></div>
-                <div className="mockup-kpi"><div className="mockup-kpi-val">92%</div><div className="mockup-kpi-label">Qualité données</div></div>
-                <div className="mockup-kpi mockup-kpi-accent"><div className="mockup-kpi-val">+15%</div><div className="mockup-kpi-label">Croissance</div></div>
+                <div className="mockup-kpi">
+                  <div className="mockup-kpi-val">1,247</div>
+                  <div className="mockup-kpi-label">Lignes</div>
+                </div>
+                <div className="mockup-kpi">
+                  <div className="mockup-kpi-val">94%</div>
+                  <div className="mockup-kpi-label">Qualite</div>
+                </div>
+                <div className="mockup-kpi mockup-kpi-accent">
+                  <div className="mockup-kpi-val">+18%</div>
+                  <div className="mockup-kpi-label">Evolution</div>
+                </div>
               </div>
               <div className="mockup-chart">
-                <svg viewBox="0 0 300 100" className="mockup-chart-svg">
-                  <polyline points="0,80 50,60 100,65 150,40 200,30 250,45 300,20" fill="none" stroke="#4F46E5" strokeWidth="3" />
-                  <polyline points="0,90 50,80 100,75 150,70 200,60 250,55 300,50" fill="none" stroke="#10B981" strokeWidth="2" strokeDasharray="5,5" />
+                <svg viewBox="0 0 300 90" className="mockup-chart-svg">
+                  <defs>
+                    <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#E8853D" stopOpacity="0.2" />
+                      <stop offset="100%" stopColor="#E8853D" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M0,75 Q30,68 60,60 T120,42 T180,35 T240,28 T300,15"
+                    fill="none"
+                    stroke="#E8853D"
+                    strokeWidth="2.5"
+                  />
+                  <path
+                    d="M0,75 Q30,68 60,60 T120,42 T180,35 T240,28 T300,15 L300,90 L0,90Z"
+                    fill="url(#chartGrad)"
+                  />
+                  <path
+                    d="M0,82 Q40,78 80,72 T160,64 T240,58 T300,52"
+                    fill="none"
+                    stroke="#3DAA6D"
+                    strokeWidth="1.5"
+                    strokeDasharray="4,4"
+                    opacity="0.5"
+                  />
                 </svg>
               </div>
             </div>
@@ -90,32 +158,90 @@ export default function HomePage() {
       </section>
 
       {/* How it works */}
-      <section id="how-it-works" className="landing-section">
-        <motion.div className="landing-section-header" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-          <h2 className="landing-section-title">Comment ça marche</h2>
-          <p className="landing-section-subtitle">Trois étapes simples pour obtenir votre dashboard</p>
+      <section id="how" className="landing-section">
+        <motion.div
+          className="landing-section-header"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          variants={fadeUp}
+        >
+          <h2 className="landing-section-title">Trois etapes, c'est tout</h2>
+          <p className="landing-section-subtitle">
+            Pas de configuration. Pas de tuto. Juste vos donnees.
+          </p>
         </motion.div>
+
         <div className="landing-steps">
-          {STEPS.map((step, i) => (
-            <motion.div key={i} className="landing-step" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i}>
-              <div className="landing-step-num">{step.num}</div>
-              <h3 className="landing-step-title">{step.title}</h3>
-              <p className="landing-step-desc">{step.desc}</p>
+          {FEATURES.map((f, i) => (
+            <motion.div
+              key={i}
+              className="landing-step"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-40px" }}
+              variants={fadeUp}
+              custom={i}
+            >
+              <div className="landing-step-num">{f.icon}</div>
+              <h3 className="landing-step-title">{f.title}</h3>
+              <p className="landing-step-desc">{f.desc}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Features */}
+      {/* Features — 2 col asymmetric */}
       <section className="landing-section landing-section-alt">
-        <motion.div className="landing-section-header" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-          <h2 className="landing-section-title">Fonctionnalités</h2>
-          <p className="landing-section-subtitle">Tout ce dont vous avez besoin pour analyser vos données</p>
+        <motion.div
+          className="landing-section-header"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          variants={fadeUp}
+        >
+          <h2 className="landing-section-title">Ce qu'on fait pour vous</h2>
+          <p className="landing-section-subtitle">
+            Derriere la simplicite, une pipeline de donnees serieuse
+          </p>
         </motion.div>
+
         <div className="landing-features">
-          {FEATURES.map((f, i) => (
-            <motion.div key={i} className="landing-feature" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i}>
-              <div className="landing-feature-icon">{f.icon}</div>
+          {[
+            {
+              title: "Analyse IA",
+              desc: "OpenAI lit vos colonnes, comprend le contexte et sort des insights que vous n'auriez pas trouves seul.",
+            },
+            {
+              title: "Graphiques auto",
+              desc: "Barres, courbes, pie-charts — choisis selon le type de donnees. Pas besoin de design.",
+            },
+            {
+              title: "Email vers dashboard",
+              desc: "Envoyez en PJ, recevez un lien. Aucune inscription pour commencer.",
+            },
+            {
+              title: "Export PDF",
+              desc: "Un clic pour telecharger un rapport propre. Pret pour la reunion de 9h.",
+            },
+            {
+              title: "Partage securise",
+              desc: "Lien temporaire, pas de mot de passe. Vos donnees restent privees.",
+            },
+            {
+              title: "Cache intelligent",
+              desc: "Pas de re-traitement inutile. Les donnees deja analysees sont en memoire.",
+            },
+          ].map((f, i) => (
+            <motion.div
+              key={i}
+              className="landing-feature"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-40px" }}
+              variants={fadeUp}
+              custom={i}
+            >
               <h3 className="landing-feature-title">{f.title}</h3>
               <p className="landing-feature-desc">{f.desc}</p>
             </motion.div>
@@ -123,16 +249,29 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Tech stack */}
+      {/* Tech */}
       <section className="landing-section">
-        <motion.div className="landing-section-header" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-          <h2 className="landing-section-title">Stack technique</h2>
-          <p className="landing-section-subtitle">Technologies modernes pour une plateforme performante</p>
+        <motion.div
+          className="landing-section-header"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          variants={fadeUp}
+        >
+          <h2 className="landing-section-title">Sous le capot</h2>
         </motion.div>
         <div className="landing-techs">
-          {TECHS.map((t, i) => (
-            <motion.div key={i} className="landing-tech" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i}>
-              <div className="landing-tech-dot" style={{ background: t.color }} />
+          {TOOLS.map((t, i) => (
+            <motion.div
+              key={i}
+              className="landing-tech"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              custom={i}
+            >
+              <div className="landing-tech-dot" style={{ background: t.dot }} />
               <span>{t.name}</span>
             </motion.div>
           ))}
@@ -141,11 +280,23 @@ export default function HomePage() {
 
       {/* CTA */}
       <section className="landing-cta">
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-          <h2 className="landing-cta-title">Prêt à analyser vos données ?</h2>
-          <p className="landing-cta-subtitle">Créez votre compte gratuit et uploadez votre premier fichier.</p>
-          <Link to={isAuthenticated ? "/upload" : "/register"} className="btn btn-primary btn-lg">
-            Commencer maintenant
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeUp}
+        >
+          <h2 className="landing-cta-title">
+            Pas de temps a perdre avec des tableurs ?
+          </h2>
+          <p className="landing-cta-subtitle">
+            Un fichier, quelques secondes, un dashboard. C'est tout.
+          </p>
+          <Link
+            to={isAuthenticated ? "/upload" : "/register"}
+            className="btn btn-accent btn-lg"
+          >
+            Commencer
           </Link>
         </motion.div>
       </section>

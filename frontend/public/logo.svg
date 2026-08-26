@@ -1,26 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" fill="none">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#4F46E5"/>
-      <stop offset="100%" style="stop-color:#7C3AED"/>
-    </linearGradient>
-    <linearGradient id="chart" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#A5B4FC"/>
-      <stop offset="100%" style="stop-color:#C4B5FD"/>
-    </linearGradient>
+    <clipPath id="mark">
+      <path d="M4 8C4 5.79 5.79 4 8 4H24C33.94 4 42 12.06 42 22V22C42 31.94 33.94 40 24 40H8C5.79 40 4 38.21 4 36V8Z"/>
+    </clipPath>
   </defs>
-  <!-- Rounded square background -->
-  <rect x="4" y="4" width="112" height="112" rx="28" fill="url(#bg)"/>
-  <!-- Dashboard bars -->
-  <rect x="24" y="62" width="14" height="30" rx="3" fill="url(#chart)" opacity="0.7"/>
-  <rect x="44" y="46" width="14" height="46" rx="3" fill="url(#chart)" opacity="0.85"/>
-  <rect x="64" y="30" width="14" height="62" rx="3" fill="#fff"/>
-  <rect x="84" y="52" width="14" height="40" rx="3" fill="url(#chart)" opacity="0.6"/>
-  <!-- Trend line -->
-  <polyline points="31,58 51,42 71,26 91,48" fill="none" stroke="#10B981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Dots on trend line -->
-  <circle cx="31" cy="58" r="3.5" fill="#10B981"/>
-  <circle cx="51" cy="42" r="3.5" fill="#10B981"/>
-  <circle cx="71" cy="26" r="3.5" fill="#10B981"/>
-  <circle cx="91" cy="48" r="3.5" fill="#10B981"/>
+  <!-- Mark: D shape with internal data visualization -->
+  <g clip-path="url(#mark)">
+    <rect width="46" height="44" fill="#1A1A2E"/>
+    <!-- Abstract data shape inside the D -->
+    <path d="M12 34 L12 18 L18 14 L24 20 L30 10 L36 16 L36 34 Z" fill="#E8853D" opacity="0.9"/>
+    <path d="M12 34 L18 28 L24 30 L30 22 L36 26 L36 34 Z" fill="#FF6B4A" opacity="0.7"/>
+    <!-- Small dot accent -->
+    <circle cx="30" cy="10" r="2.5" fill="#fff"/>
+  </g>
+  <!-- Wordmark -->
+  <text x="54" y="33" font-family="'Space Grotesk', 'Inter', system-ui, sans-serif" font-size="28" font-weight="700" fill="#1A1A2E" letter-spacing="-0.5">dashbail</text>
 </svg>

@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getReports } from "../services/api.js";
 
-const STATUS_LABELS = {
-  completed: { label: "Terminé", class: "badge-success" },
-  processing: { label: "En cours", class: "badge-primary" },
-  pending: { label: "En attente", class: "badge-info" },
-  failed: { label: "Échoué", class: "badge-error" },
-  cleaning: { label: "Nettoyage", class: "badge-primary" },
-  analyzing: { label: "Analyse IA", class: "badge-ai" },
+const STATUS = {
+  completed: { label: "Termine", cls: "badge-success" },
+  processing: { label: "En cours", cls: "badge-primary" },
+  pending: { label: "En attente", cls: "badge-info" },
+  failed: { label: "Echoue", cls: "badge-error" },
+  cleaning: { label: "Nettoyage", cls: "badge-primary" },
+  analyzing: { label: "Analyse IA", cls: "badge-ai" },
 };
 
 export default function ReportsPage() {
@@ -26,13 +26,24 @@ export default function ReportsPage() {
   }, []);
 
   const filtered = reports.filter((r) => {
-    const matchSearch = !search || r.title?.toLowerCase().includes(search.toLowerCase());
+    const matchSearch =
+      !search || r.title?.toLowerCase().includes(search.toLowerCase());
     const matchFilter = filter === "all" || r.status === filter;
     return matchSearch && matchFilter;
   });
 
-  if (loading) return <div className="auth-page"><div className="loading-spinner" /></div>;
-  if (error) return <div className="auth-page"><div className="auth-error">{error.message}</div></div>;
+  if (loading)
+    return (
+      <div className="upload-page">
+        <div className="loading-spinner" />
+      </div>
+    );
+  if (error)
+    return (
+      <div className="upload-page">
+        <div className="auth-error">{error.message}</div>
+      </div>
+    );
 
   return (
     <div className="reports-page">
@@ -40,15 +51,19 @@ export default function ReportsPage() {
         <div className="reports-header">
           <div>
             <h1 className="reports-title">Mes rapports</h1>
-            <p className="reports-subtitle">{reports.length} rapport{reports.length > 1 ? "s" : ""} au total</p>
+            <p className="reports-subtitle">
+              {reports.length} rapport{reports.length !== 1 ? "s" : ""}
+            </p>
           </div>
-          <Link to="/upload" className="btn btn-primary">+ Nouveau rapport</Link>
+          <Link to="/upload" className="btn btn-accent btn-sm">
+            + Nouveau
+          </Link>
         </div>
 
         <div className="reports-filters">
           <input
             type="text"
-            placeholder="Rechercher un rapport..."
+            placeholder="Rechercher..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="reports-search"
@@ -60,7 +75,7 @@ export default function ReportsPage() {
                 className={`filter-pill ${filter === f ? "filter-pill-active" : ""}`}
                 onClick={() => setFilter(f)}
               >
-                {f === "all" ? "Tous" : STATUS_LABELS[f]?.label || f}
+                {f === "all" ? "Tous" : STATUS[f]?.label || f}
               </button>
             ))}
           </div>
@@ -68,13 +83,18 @@ export default function ReportsPage() {
 
         {filtered.length === 0 ? (
           <div className="reports-empty">
-            <p>Aucun rapport trouvé.</p>
-            <Link to="/upload" className="btn btn-primary">Analyser un fichier</Link>
+            <p>Aucun rapport pour l'instant.</p>
+            <Link to="/upload" className="btn btn-primary btn-sm">
+              Analyser un fichier
+            </Link>
           </div>
         ) : (
           <div className="reports-list">
             {filtered.map((report) => {
-              const status = STATUS_LABELS[report.status] || { label: report.status, class: "badge-neutral" };
+              const st = STATUS[report.status] || {
+                label: report.status,
+                cls: "badge-neutral",
+              };
               return (
                 <Link
                   key={report.id}
@@ -83,16 +103,26 @@ export default function ReportsPage() {
                 >
                   <div className="report-card-header">
                     <h3 className="report-card-title">{report.title}</h3>
-                    <span className={`badge ${status.class}`}>{status.label}</span>
+                    <span className={`badge ${st.cls}`}>{st.label}</span>
                   </div>
                   <div className="report-card-meta">
-                    {report.row_count && <span>{report.row_count.toLocaleString()} lignes</span>}
-                    {report.column_count && <span>{report.column_count} colonnes</span>}
-                    {report.file_size && <span>{(report.file_size / 1024).toFixed(0)} Ko</span>}
+                    {report.row_count && (
+                      <span>{report.row_count.toLocaleString()} lignes</span>
+                    )}
+                    {report.column_count && (
+                      <span>{report.column_count} colonnes</span>
+                    )}
+                    {report.file_size && (
+                      <span>{(report.file_size / 1024).toFixed(0)} Ko</span>
+                    )}
                   </div>
                   <div className="report-card-date">
                     {new Date(report.created_at).toLocaleDateString("fr-FR", {
-                      day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit",
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
                     })}
                   </div>
                 </Link>
