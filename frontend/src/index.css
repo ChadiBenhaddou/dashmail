@@ -20,6 +20,102 @@
   --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
+/* ── Dark Mode ── */
+[data-theme="dark"] {
+  --color-bg: #0F172A;
+  --color-surface: #1E293B;
+  --color-border: #334155;
+  --color-text: #F9FAFB;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
+  --color-success-bg: #064E3B;
+  --color-error-bg: #7F1D1D;
+  --color-info-bg: #312E81;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-hover: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+[data-theme="dark"] .landing-hero-mockup,
+[data-theme="dark"] .landing-step,
+[data-theme="dark"] .landing-feature,
+[data-theme="dark"] .landing-tech,
+[data-theme="dark"] .report-card,
+[data-theme="dark"] .analytics-kpi,
+[data-theme="dark"] .analytics-chart-card,
+[data-theme="dark"] .analytics-recent,
+[data-theme="dark"] .auth-card,
+[data-theme="dark"] .upload-card,
+[data-theme="dark"] .card {
+  background: #1E293B;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .site-header,
+[data-theme="dark"] .site-footer,
+[data-theme="dark"] .landing-hero-mockup .mockup-header {
+  background: #1E293B;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .reports-search,
+[data-theme="dark"] .upload-zone {
+  background: #0F172A;
+  border-color: #334155;
+  color: #F9FAFB;
+}
+
+[data-theme="dark"] .site-nav-link:hover,
+[data-theme="dark"] .site-user-btn:hover,
+[data-theme="dark"] .analytics-recent-item:hover,
+[data-theme="dark"] .filter-pill {
+  background: #334155;
+}
+
+[data-theme="dark"] .landing-hero-title,
+[data-theme="dark"] .landing-section-title,
+[data-theme="dark"] .landing-step-title,
+[data-theme="dark"] .landing-feature-title {
+  color: #F9FAFB;
+}
+
+[data-theme="dark"] .landing-section-alt {
+  background: #0F172A;
+}
+
+[data-theme="dark"] .landing-cta {
+  background: linear-gradient(135deg, #312E81, #5B21B6);
+}
+
+[data-theme="dark"] .mockup-url,
+[data-theme="dark"] .mockup-kpi,
+[data-theme="dark"] .mockup-chart {
+  background: #0F172A;
+}
+
+/* ── Theme Toggle ── */
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--color-border, #E5E7EB);
+  border-radius: 8px;
+  padding: 6px 8px;
+  cursor: pointer;
+  color: var(--color-text-secondary, #6B7280);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.theme-toggle:hover {
+  background: var(--color-bg, #F5F6FA);
+  color: var(--color-text, #111827);
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+  background: #334155;
+}
+
 /* ── Reset ── */
 *,
 *::before,

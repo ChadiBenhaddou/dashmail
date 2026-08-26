@@ -17,6 +17,7 @@ function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState(isProcessing);
+  const [copied, setCopied] = useState(false);
   const pollingRef = useRef(null);
 
   const fetchReport = () => {
@@ -58,6 +59,23 @@ function DashboardPage() {
     };
   }, [id]);
 
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      const input = document.createElement("input");
+      input.value = window.location.href;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      document.body.removeChild(input);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   if (loading && !processing) return <LoadingState />;
   if (processing && !report) return <LoadingState status="processing" />;
   if (error) return <ErrorState error={error} onRetry={fetchReport} />;
@@ -74,6 +92,9 @@ function DashboardPage() {
             <span className="dashboard-header-dot" aria-hidden="true" />
             <span className="dashboard-header-status-text">Rapport prêt</span>
           </div>
+          <button className="btn btn-secondary btn-sm" onClick={copyLink}>
+            {copied ? "✓ Copié !" : "Partager"}
+          </button>
           <Link to="/upload" className="btn btn-secondary btn-sm">Nouvelle analyse</Link>
         </div>
       </header>
