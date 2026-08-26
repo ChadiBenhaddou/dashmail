@@ -623,3 +623,125 @@ a:focus-visible {
     display: none;
   }
 }
+
+/* ===== AUTH PAGES ===== */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg, #F5F6FA);
+  padding: 24px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--color-surface, #fff);
+  border-radius: 16px;
+  padding: 40px 32px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+
+.auth-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.auth-logo-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: var(--color-primary, #4F46E5);
+  color: #fff;
+  font-size: 24px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text, #111827);
+  text-align: center;
+  margin: 0 0 4px;
+}
+
+.auth-subtitle {
+  font-size: 14px;
+  color: var(--color-text-muted, #6B7280);
+  text-align: center;
+  margin: 0 0 28px;
+}
+
+.auth-error {
+  background: #FEF2F2;
+  color: #DC2626;
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #FECACA;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text, #111827);
+}
+
+.form-group input {
+  padding: 10px 14px;
+  border: 1.5px solid #D1D5DB;
+  border-radius: 10px;
+  font-size: 14px;
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #111827);
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: var(--color-primary, #4F46E5);
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+}
+
+.form-group input::placeholder {
+  color: var(--color-text-muted, #9CA3AF);
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.auth-footer {
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-text-muted, #6B7280);
+  margin-top: 24px;
+}
+
+.auth-link {
+  color: var(--color-primary, #4F46E5);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
