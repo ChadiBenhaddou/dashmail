@@ -99,6 +99,13 @@ REST_FRAMEWORK = {
     ],
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": os.environ.get("REDIS_URL", "redis://redis:6379/0"),
+    }
+}
+
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.environ.get("CORS_ALLOWED_ORIGINS", "http://localhost:5173").split(",")
@@ -124,3 +131,5 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
 EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "true").lower() == "true"
 EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL", "false").lower() == "true"
 EMAIL_FROM = os.environ.get("EMAIL_FROM", "reports@example.com")
+
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
