@@ -48,4 +48,5 @@ def build_analysis_prompt(column_summary):
         f"```json\n{summary_json}\n```\n\n"
         "Propose les visualisations et insights pertinents pour ce jeu de données."
     )
-    return SYSTEM_PROMPT, user_prompt
+    full_system = f"{SYSTEM_PROMPT}\n\n{SCHEMA_INSTRUCTIONS}"
+    return full_system, user_prompt
