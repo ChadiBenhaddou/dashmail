@@ -14,36 +14,49 @@ class Command(BaseCommand):
                 "row_count": 1250,
                 "column_count": 8,
                 "file_size": 524288,
-                "data_quality_score": 0.92,
-                "llm_insights": (
-                    "Revenue increased by 15% compared to Q4 2023. "
-                    "The top-performing product category was Electronics "
-                    "with 340 units sold. Customer retention rate improved "
-                    "to 78%. Regional performance shows strongest growth "
-                    "in the North-West corridor."
-                ),
+                "data_quality_score": 92,
+                "llm_insights": {
+                    "insights": [
+                        {
+                            "title": "Croissance du revenu",
+                            "description": "Le revenu a augment\u00e9 de 15% par rapport au T4 2023, port\u00e9 par une forte demande en \u00e9lectronique.",
+                            "sentiment": "positive",
+                        },
+                        {
+                            "title": "Meilleure r\u00e9tention client",
+                            "description": "Le taux de r\u00e9tention client a atteint 78%, en hausse de 5 points par rapport au trimestre pr\u00e9c\u00e9dent.",
+                            "sentiment": "positive",
+                        },
+                        {
+                            "title": "Performance r\u00e9gionale",
+                            "description": "La corridor Nord-Ouest affiche la croissance la plus forte, tandis que le Sud reste en retard.",
+                            "sentiment": "neutral",
+                        },
+                    ],
+                    "summary": "Trimestre solide avec croissance \u00e0 deux chiffres et am\u00e9lioration de la r\u00e9tention. \u00c9lectronique reste le moteur principal.",
+                },
                 "charts_config": [
                     {
                         "type": "line",
-                        "title": "Monthly Revenue Trend",
-                        "dataKey": "revenue",
-                        "xAxis": "month",
+                        "title": "Revenu mensuel",
+                        "xAxisKey": "month",
+                        "yAxisKey": "revenue",
                         "data": [
                             {"month": "Jan", "revenue": 42000},
-                            {"month": "Feb", "revenue": 48500},
+                            {"month": "F\u00e9v", "revenue": 48500},
                             {"month": "Mar", "revenue": 51200},
                         ],
                     },
                     {
                         "type": "bar",
-                        "title": "Sales by Region",
-                        "dataKey": "sales",
-                        "xAxis": "region",
+                        "title": "Ventes par r\u00e9gion",
+                        "xAxisKey": "region",
+                        "yAxisKey": "sales",
                         "data": [
-                            {"region": "North", "sales": 320},
-                            {"region": "South", "sales": 280},
-                            {"region": "East", "sales": 195},
-                            {"region": "West", "sales": 455},
+                            {"region": "Nord", "sales": 320},
+                            {"region": "Sud", "sales": 280},
+                            {"region": "Est", "sales": 195},
+                            {"region": "Ouest", "sales": 455},
                         ],
                     },
                 ],
@@ -59,19 +72,33 @@ class Command(BaseCommand):
                 "row_count": 3200,
                 "column_count": 12,
                 "file_size": 1048576,
-                "data_quality_score": 0.87,
-                "llm_insights": (
-                    "Campaign ROI reached 3.2x across all channels. "
-                    "Social media impressions grew by 28% month-over-month. "
-                    "Email open rates averaged 22.5%, above industry benchmark. "
-                    "Recommended shift 15% of print budget to digital channels."
-                ),
+                "data_quality_score": 87,
+                "llm_insights": {
+                    "insights": [
+                        {
+                            "title": "ROI des campagnes \u00e9lev\u00e9",
+                            "description": "Le ROI moyen a atteint 3.2x sur l'ensemble des canaux, d\u00e9passant l'objectif de 2.5x.",
+                            "sentiment": "positive",
+                        },
+                        {
+                            "title": "Croissance r\u00e9seaux sociaux",
+                            "description": "Les impressions sur les r\u00e9seaux sociaux ont augment\u00e9 de 28% mois par mois.",
+                            "sentiment": "positive",
+                        },
+                        {
+                            "title": "Recommandation budg\u00e9taire",
+                            "description": "Rediriger 15% du budget print vers le digital pour optimiser le ROI.",
+                            "sentiment": "neutral",
+                        },
+                    ],
+                    "summary": "Campagnes performantes avec ROI de 3.2x. Les r\u00e9seaux sociaux sont le canal \u00e0 fort potentiel.",
+                },
                 "charts_config": [
                     {
                         "type": "bar",
-                        "title": "Campaign Performance by Channel",
-                        "dataKey": "conversions",
-                        "xAxis": "channel",
+                        "title": "Performance par canal",
+                        "xAxisKey": "channel",
+                        "yAxisKey": "conversions",
                         "data": [
                             {"channel": "Email", "conversions": 890},
                             {"channel": "Social", "conversions": 1240},
@@ -81,14 +108,14 @@ class Command(BaseCommand):
                     },
                     {
                         "type": "line",
-                        "title": "Weekly Impressions",
-                        "dataKey": "impressions",
-                        "xAxis": "week",
+                        "title": "Impressions hebdomadaires",
+                        "xAxisKey": "week",
+                        "yAxisKey": "impressions",
                         "data": [
-                            {"week": "W1", "impressions": 45000},
-                            {"week": "W2", "impressions": 52000},
-                            {"week": "W3", "impressions": 48500},
-                            {"week": "W4", "impressions": 61000},
+                            {"week": "S1", "impressions": 45000},
+                            {"week": "S2", "impressions": 52000},
+                            {"week": "S3", "impressions": 48500},
+                            {"week": "S4", "impressions": 61000},
                         ],
                     },
                 ],
@@ -104,25 +131,38 @@ class Command(BaseCommand):
                 "row_count": 480,
                 "column_count": 15,
                 "file_size": 262144,
-                "data_quality_score": 0.95,
-                "llm_insights": (
-                    "Total headcount stands at 480 employees. Average "
-                    "tenure is 3.4 years. Voluntary attrition rate is "
-                    "12%, below industry average of 18%. Engineering "
-                    "department has the highest growth at 22% YoY. "
-                    "Average training hours per employee: 24h."
-                ),
+                "data_quality_score": 95,
+                "llm_insights": {
+                    "insights": [
+                        {
+                            "title": "Effectifs stables",
+                            "description": "L'effectif total est de 480 employ\u00e9s avec une anciennet\u00e9 moyenne de 3.4 ans.",
+                            "sentiment": "neutral",
+                        },
+                        {
+                            "title": "Turnover ma\u00eetris\u00e9",
+                            "description": "Le taux de turnover volontaire est de 12%, bien en dessous de la moyenne du secteur (18%).",
+                            "sentiment": "positive",
+                        },
+                        {
+                            "title": "Croissance ing\u00e9nierie",
+                            "description": "Le d\u00e9partement ing\u00e9nierie affiche la plus forte croissance \u00e0 +22% annuel.",
+                            "sentiment": "positive",
+                        },
+                    ],
+                    "summary": "Ressources humaines en bonne sant\u00e9. Turnover bas, croissance forte en ing\u00e9nierie.",
+                },
                 "charts_config": [
                     {
                         "type": "bar",
-                        "title": "Headcount by Department",
-                        "dataKey": "count",
-                        "xAxis": "department",
+                        "title": "Effectifs par d\u00e9partement",
+                        "xAxisKey": "department",
+                        "yAxisKey": "count",
                         "data": [
-                            {"department": "Engineering", "count": 180},
-                            {"department": "Sales", "count": 95},
+                            {"department": "Ing\u00e9nierie", "count": 180},
+                            {"department": "Ventes", "count": 95},
                             {"department": "Marketing", "count": 65},
-                            {"department": "HR", "count": 30},
+                            {"department": "RH", "count": 30},
                             {"department": "Finance", "count": 45},
                             {"department": "Ops", "count": 65},
                         ],
@@ -135,30 +175,43 @@ class Command(BaseCommand):
                 },
             },
             {
-                "title": "Performance Financiere 2024",
+                "title": "Performance Financi\u00e8re 2024",
                 "sender_email": "finance@example.com",
                 "row_count": 890,
                 "column_count": 10,
                 "file_size": 786432,
-                "data_quality_score": 0.98,
-                "llm_insights": (
-                    "Net profit margin improved to 14.2%, up from 11.8% "
-                    "in 2023. Operating expenses reduced by 8% through "
-                    "automation initiatives. Cash flow from operations "
-                    "reached $2.4M. Accounts receivable days decreased "
-                    "from 45 to 38 days."
-                ),
+                "data_quality_score": 98,
+                "llm_insights": {
+                    "insights": [
+                        {
+                            "title": "Marge nette en hausse",
+                            "description": "La marge nette a atteint 14.2%, en hausse par rapport aux 11.8% de 2023.",
+                            "sentiment": "positive",
+                        },
+                        {
+                            "title": "R\u00e9duction des charges",
+                            "description": "Les d\u00e9penses d'exploitation ont \u00e9t\u00e9 r\u00e9duites de 8% gr\u00e2ce aux initiatives d'automatisation.",
+                            "sentiment": "positive",
+                        },
+                        {
+                            "title": "Tr\u00e9sorerie solide",
+                            "description": "Le flux de tr\u00e9sorerie op\u00e9rationnel a atteint 2.4M$ avec des d\u00e9lais d'encaissements r\u00e9duits.",
+                            "sentiment": "positive",
+                        },
+                    ],
+                    "summary": "Exercice financier excellent avec am\u00e9lioration de la marge et r\u00e9duction des charges op\u00e9rationnelles.",
+                },
                 "charts_config": [
                     {
                         "type": "line",
-                        "title": "Quarterly Revenue vs Expenses",
-                        "dataKey": "revenue",
-                        "xAxis": "quarter",
+                        "title": "Revenus vs D\u00e9penses trimestriels",
+                        "xAxisKey": "quarter",
+                        "yAxisKey": "revenue",
                         "data": [
-                            {"quarter": "Q1", "revenue": 1200000, "expenses": 980000},
-                            {"quarter": "Q2", "revenue": 1350000, "expenses": 1020000},
-                            {"quarter": "Q3", "revenue": 1480000, "expenses": 1050000},
-                            {"quarter": "Q4", "revenue": 1620000, "expenses": 1100000},
+                            {"quarter": "T1", "revenue": 1200000, "expenses": 980000},
+                            {"quarter": "T2", "revenue": 1350000, "expenses": 1020000},
+                            {"quarter": "T3", "revenue": 1480000, "expenses": 1050000},
+                            {"quarter": "T4", "revenue": 1620000, "expenses": 1100000},
                         ],
                     },
                 ],
@@ -174,35 +227,48 @@ class Command(BaseCommand):
                 "row_count": 2100,
                 "column_count": 6,
                 "file_size": 393216,
-                "data_quality_score": 0.89,
-                "llm_insights": (
-                    "Overall customer satisfaction score: 4.3/5.0. "
-                    "NPS score increased to +42, up from +35 in Q2. "
-                    "Top complaint category: delivery delays (31% of tickets). "
-                    "Live chat adoption grew by 40%. First response time "
-                    "averaged 2.1 hours, meeting the SLA target."
-                ),
+                "data_quality_score": 89,
+                "llm_insights": {
+                    "insights": [
+                        {
+                            "title": "Score de satisfaction \u00e9lev\u00e9",
+                            "description": "Le score de satisfaction client est de 4.3/5.0, en hausse par rapport au T2.",
+                            "sentiment": "positive",
+                        },
+                        {
+                            "title": "NPS en progression",
+                            "description": "Le NPS a augment\u00e9 \u00e0 +42, en hausse par rapport \u00e0 +35 au T2.",
+                            "sentiment": "positive",
+                        },
+                        {
+                            "title": "Retards de livraison",
+                            "description": "Les retards de livraison repr\u00e9sentent 31% des tickets, \u00e0 am\u00e9liorer.",
+                            "sentiment": "negative",
+                        },
+                    ],
+                    "summary": "Satisfaction client globalement bonne avec NPS en progression. Les retards de livraison restent le point d'am\u00e9lioration principal.",
+                },
                 "charts_config": [
                     {
                         "type": "bar",
-                        "title": "Satisfaction by Category",
-                        "dataKey": "score",
-                        "xAxis": "category",
+                        "title": "Satisfaction par cat\u00e9gorie",
+                        "xAxisKey": "category",
+                        "yAxisKey": "score",
                         "data": [
-                            {"category": "Product", "score": 4.5},
+                            {"category": "Produit", "score": 4.5},
                             {"category": "Support", "score": 4.2},
-                            {"category": "Delivery", "score": 3.8},
-                            {"category": "Pricing", "score": 4.1},
+                            {"category": "Livraison", "score": 3.8},
+                            {"category": "Prix", "score": 4.1},
                         ],
                     },
                     {
                         "type": "line",
-                        "title": "NPS Trend",
-                        "dataKey": "nps",
-                        "xAxis": "month",
+                        "title": "Tendance NPS",
+                        "xAxisKey": "month",
+                        "yAxisKey": "nps",
                         "data": [
                             {"month": "Jul", "nps": 35},
-                            {"month": "Aug", "nps": 38},
+                            {"month": "Ao\u00fb", "nps": 38},
                             {"month": "Sep", "nps": 42},
                         ],
                     },

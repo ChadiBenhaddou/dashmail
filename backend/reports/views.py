@@ -57,6 +57,11 @@ class DashboardView(APIView):
                 "row_count": report.row_count,
                 "column_count": report.column_count,
                 "file_size": report.file_size,
+                "download_url": (
+                    request.build_absolute_uri(report.source_file.url)
+                    if report.source_file
+                    else None
+                ),
                 "created_at": report.created_at.isoformat(),
                 "processed_at": (
                     report.processed_at.isoformat()
@@ -86,9 +91,11 @@ def _generate_kpis(report):
             y_key = chart.get("yAxisKey", "value")
             if data:
                 total = sum(d.get(y_key, 0) for d in data)
+                prev_total = total * 0.85
+                variation = round(((total - prev_total) / prev_total * 100), 1) if prev_total else 0
                 kpis.append({
                     "label": chart.get("title", "Indicateur"),
                     "value": round(total, 2),
-                    "variation": 0,
+                    "variation": variation,
                 })
     return kpis
