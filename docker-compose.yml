@@ -54,6 +54,7 @@ services:
       EMAIL_FROM: ${EMAIL_FROM:-reports@example.com}
     volumes:
       - ./backend:/app
+      - media_data:/app/media
     ports:
       - "8000:8000"
     depends_on:
@@ -79,6 +80,7 @@ services:
       LLM_API_KEY: ${LLM_API_KEY:-}
     volumes:
       - ./backend:/app
+      - media_data:/app/media
     depends_on:
       postgres:
         condition: service_healthy
@@ -101,3 +103,4 @@ services:
 
 volumes:
   postgres_data:
+  media_data:

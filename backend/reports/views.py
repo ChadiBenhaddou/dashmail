@@ -50,6 +50,7 @@ class UploadView(APIView):
         report = Report.objects.create(
             title=title,
             sender_email=request.user.email,
+            source_file=file,
             file_size=file.size,
             status=Report.Status.PENDING,
         )
@@ -86,7 +87,7 @@ class DashboardView(APIView):
 
         try:
             report = Report.objects.get(dashboard_link=dashboard_uuid)
-        except Report.DoesNotExist:
+        except (Report.DoesNotExist, ValueError):
             return Response(
                 {"error": "Rapport non trouvé", "code": "not_found"},
                 status=status.HTTP_404_NOT_FOUND,
@@ -132,7 +133,7 @@ class DashboardView(APIView):
                 ),
             },
             "charts": report.charts_config or [],
-            "insights": report.llm_insights or {},
+            "insights": (report.llm_insights or {}).get("insights", []) if isinstance(report.llm_insights, dict) else (report.llm_insights or []),
             "data_quality": {
                 "score": report.data_quality_score,
                 "cleaning_log": report.cleaning_log or {},

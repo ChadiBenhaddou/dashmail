@@ -108,7 +108,7 @@ def process_report(self, report_id):
         # 5. Call LLM
         try:
             llm_response = call_llm(system_prompt, user_prompt)
-        except (openai.APITimeoutError, openai.APIStatusError, ValueError, KeyError):
+        except Exception:
             logger.warning("LLM failed for report %s, using heuristic fallback", report_id)
             llm_response = _generate_heuristic_insights(parse_result, cleaned_df)
 
@@ -146,29 +146,68 @@ def process_report(self, report_id):
 
 
 def _generate_heuristic_insights(parse_result, df):
+    import pandas as pd
+
     insights = []
-    num_cols = [c for c in df.columns if df[c].dtype in ("int64", "float64")]
+    visualizations = []
+    num_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
     cat_cols = [c for c in df.columns if df[c].dtype == "object"]
 
     if num_cols:
         col = num_cols[0]
-        total = df[col].sum()
-        mean = df[col].mean()
+        total = float(df[col].sum())
+        mean = float(df[col].mean())
         insights.append({
             "title": f"Analyse de {col}",
             "description": f"La somme totale de {col} est {total:,.2f} avec une moyenne de {mean:,.2f}.",
             "sentiment": "neutral",
         })
+        # Bar chart: top values of first numeric col by first cat col, or just the numeric col
+        if cat_cols:
+            x_key = cat_cols[0]
+            y_key = col
+            n_unique = df[x_key].nunique()
+            work = df.copy()
+            if n_unique > 20:
+                top = df[x_key].value_counts().head(15).index
+                work = work[work[x_key].isin(top)]
+            grouped = work.groupby(x_key, sort=True)[y_key].sum().reset_index()
+            grouped[y_key] = grouped[y_key].round(2)
+            grouped = grouped.sort_values(y_key, ascending=False)
+            visualizations.append({
+                "type": "bar",
+                "title": f"{y_key} par {x_key}",
+                "x_axis": x_key,
+                "y_axis": y_key,
+                "description": f"Somme de {y_key} pour chaque {x_key}.",
+            })
 
     if len(num_cols) >= 2:
         c1, c2 = num_cols[0], num_cols[1]
-        corr = df[c1].corr(df[c2])
+        corr = float(df[c1].corr(df[c2]))
         if abs(corr) > 0.5:
             sentiment = "positive" if corr > 0 else "negative"
             insights.append({
                 "title": f"Corrélation {c1} / {c2}",
                 "description": f"Corrélation de {corr:.2f} entre {c1} et {c2}.",
                 "sentiment": sentiment,
+            })
+        # Line chart of first two numeric cols
+        x_key = cat_cols[0] if cat_cols else df.columns[0]
+        if x_key not in num_cols[:2]:
+            work = df.copy()
+            n_unique = work[x_key].nunique()
+            if n_unique > 30:
+                top = work[x_key].value_counts().head(15).index
+                work = work[work[x_key].isin(top)]
+            grouped = work.groupby(x_key, sort=True)[c1].mean().reset_index()
+            grouped[c1] = grouped[c1].round(2)
+            visualizations.append({
+                "type": "line",
+                "title": f"Évolution de {c1}",
+                "x_axis": x_key,
+                "y_axis": c1,
+                "description": f"Variation de {c1} selon {x_key}.",
             })
 
     if cat_cols:
@@ -180,8 +219,34 @@ def _generate_heuristic_insights(parse_result, df):
             "description": f"Les valeurs les plus fréquentes : {top_str}.",
             "sentiment": "neutral",
         })
+        # Pie chart for categorical distribution
+        y_key = num_cols[0] if num_cols else None
+        counts = df[col].value_counts().head(8).reset_index()
+        counts.columns = [col, "count"]
+        if not any(v["type"] == "pie" for v in visualizations):
+            visualizations.append({
+                "type": "pie",
+                "title": f"Répartition — {col}",
+                "x_axis": col,
+                "y_axis": "count",
+                "description": f"Distribution des valeurs de {col}.",
+            })
+
+    # Fallback if nothing was generated
+    if not visualizations and len(df.columns) >= 1:
+        first_col = df.columns[0]
+        counts = df[first_col].value_counts().head(8).reset_index()
+        counts.columns = [first_col, "count"]
+        visualizations.append({
+            "type": "bar",
+            "title": f"Distribution — {first_col}",
+            "x_axis": first_col,
+            "y_axis": "count",
+            "description": f"Distribution des valeurs de {first_col}.",
+        })
 
     return {
+        "visualizations": visualizations,
         "insights": insights if insights else [{"title": "Analyse basique", "description": "Données analysées automatiquement.", "sentiment": "neutral"}],
         "summary": "Analyse heuristique (LLM non disponible). Les insights sont basés sur des règles statistiques de base.",
     }
