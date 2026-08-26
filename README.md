@@ -1,4 +1,4 @@
-# Dashboard X
+# Dashbail
 
 Plateforme SaaS de **generation automatique de rapports visuels** a partir de
 fichiers **CSV / Excel** envoyes par **email**.
