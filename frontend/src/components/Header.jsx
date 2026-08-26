@@ -21,8 +21,8 @@ export default function Header() {
     <header className="site-header">
       <div className="site-header-inner">
         <Link to="/" className="site-header-logo">
-          <div className="site-header-logo-icon">D</div>
-          <span className="site-header-logo-text">Dashboard X</span>
+          <img src="/logo.svg" alt="Dashbail" className="site-header-logo-img" />
+          <span className="site-header-logo-text">Dashbail</span>
         </Link>
 
         <nav className={`site-nav ${menuOpen ? "site-nav-open" : ""}`}>

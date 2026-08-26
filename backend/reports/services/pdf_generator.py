@@ -74,7 +74,7 @@ def generate_report_pdf(report):
         %s
 
         <div class="footer">
-            G&#233;n&#233;r&#233; automatiquement par Dashboard X
+            G&#233;n&#233;r&#233; automatiquement par Dashbail
         </div>
     </body>
     </html>""" % (

@@ -1,5 +1,5 @@
 """
-End-to-end test script for Dashboard X.
+End-to-end test script for Dashbail.
 Tests the full flow: file upload → processing → dashboard display.
 
 Usage: Run with Django test runner or standalone.

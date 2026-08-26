@@ -35,10 +35,10 @@ export default function RegisterPage() {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-logo">
-          <div className="auth-logo-icon">D</div>
+          <img src="/logo.svg" alt="Dashbail" className="auth-logo-img" />
         </div>
         <h1 className="auth-title">Créer un compte</h1>
-        <p className="auth-subtitle">Rejoignez Dashboard X en quelques secondes</p>
+        <p className="auth-subtitle">Rejoignez Dashbail en quelques secondes</p>
 
         {error && <div className="auth-error">{error}</div>}
 

@@ -1,7 +1,7 @@
-# Présentation — Dashboard X
+# Présentation — Dashbail
 
 ## Slide 1 — Page de titre
-Dashboard X — Génération automatique de rapports visuels par email
+Dashbail — Génération automatique de rapports visuels par email
 PFA 2024-2025
 Équipe: Chadi, Ayoub, Haitem, Moussa
 
@@ -78,4 +78,4 @@ PFA 2024-2025
 - Facturation SaaS
 
 ## Slide 10 — Merci / Questions
-Dashboard X — Merci de votre attention
+Dashbail — Merci de votre attention

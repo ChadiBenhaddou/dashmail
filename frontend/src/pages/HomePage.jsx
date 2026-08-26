@@ -70,7 +70,7 @@ export default function HomePage() {
           <div className="landing-hero-mockup">
             <div className="mockup-header">
               <div className="mockup-dots"><span /><span /><span /></div>
-              <div className="mockup-url">dashboard-x.app/dashboard/...</div>
+              <div className="mockup-url">dashbail.app/dashboard/...</div>
             </div>
             <div className="mockup-body">
               <div className="mockup-kpi-row">

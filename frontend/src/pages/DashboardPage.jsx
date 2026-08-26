@@ -84,8 +84,8 @@ function DashboardPage() {
     <>
       <header className="dashboard-header" role="banner">
         <div className="dashboard-header-logo">
-          <div className="dashboard-header-logo-icon" aria-hidden="true">D</div>
-          <span className="dashboard-header-title">Dashboard X</span>
+          <img src="/logo.svg" alt="Dashbail" className="dashboard-header-logo-img" />
+          <span className="dashboard-header-title">Dashbail</span>
         </div>
         <div className="dashboard-header-right">
           <div className="dashboard-header-status">
@@ -123,7 +123,7 @@ function DashboardPage() {
       </main>
 
       <footer className="dashboard-footer" role="contentinfo">
-        <p className="dashboard-footer-text">Généré automatiquement par Dashboard X</p>
+        <p className="dashboard-footer-text">Généré automatiquement par Dashbail</p>
         <nav className="dashboard-footer-links" aria-label="Actions du rapport">
           {report.download_url && <a href={report.download_url} download>Télécharger le fichier</a>}
           <span className="footer-sep" aria-hidden="true">·</span>

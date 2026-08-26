@@ -284,17 +284,10 @@ a:focus-visible {
   align-items: center;
   gap: 10px;
 }
-.dashboard-header-logo-icon {
+.dashboard-header-logo-img {
   width: 32px;
   height: 32px;
-  background: var(--color-primary);
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-weight: 700;
-  font-size: 16px;
+}
 }
 .dashboard-header-title {
   font-size: 16px;
@@ -770,17 +763,9 @@ a:focus-visible {
   margin-bottom: 24px;
 }
 
-.auth-logo-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
-  background: var(--color-primary, #4F46E5);
-  color: #fff;
-  font-size: 24px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.auth-logo-img {
+  width: 64px;
+  height: 64px;
 }
 
 .auth-title {
@@ -1313,17 +1298,9 @@ a:focus-visible {
   color: inherit;
 }
 
-.site-header-logo-icon {
+.site-header-logo-img {
   width: 36px;
   height: 36px;
-  border-radius: 10px;
-  background: var(--color-primary, #4F46E5);
-  color: #fff;
-  font-size: 16px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .site-header-logo-text {
@@ -1485,17 +1462,9 @@ a:focus-visible {
   margin-bottom: 16px;
 }
 
-.site-footer-logo {
+.site-footer-logo-img {
   width: 28px;
   height: 28px;
-  border-radius: 7px;
-  background: var(--color-primary, #4F46E5);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .site-footer-links {

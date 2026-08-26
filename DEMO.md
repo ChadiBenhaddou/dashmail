@@ -1,4 +1,4 @@
-# Guide de démonstration — Dashboard X
+# Guide de démonstration — Dashbail
 
 ## Préparation
 

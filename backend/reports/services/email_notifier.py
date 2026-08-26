@@ -20,7 +20,7 @@ Lignes analysées : {report.row_count or 'N/A'}
 Qualité des données : {report.data_quality_score or 'N/A'}/100
 
 Cordialement,
-Dashboard X
+Dashbail
 """
     try:
         send_mail(
@@ -47,7 +47,7 @@ Raison : {report.error_message or "Erreur inconnue"}
 Vous pouvez réessayer en envoyant à nouveau votre fichier par email.
 
 Cordialement,
-Dashboard X
+Dashbail
 """
     try:
         send_mail(

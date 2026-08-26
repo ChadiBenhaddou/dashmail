@@ -158,7 +158,7 @@ SIMPLE_JWT = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Dashboard X API",
+    "TITLE": "Dashbail API",
     "DESCRIPTION": "API pour la plateforme d'analyse automatique de données CSV/Excel",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,

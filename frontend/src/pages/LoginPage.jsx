@@ -30,7 +30,7 @@ export default function LoginPage() {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-logo">
-          <div className="auth-logo-icon">D</div>
+          <img src="/logo.svg" alt="Dashbail" className="auth-logo-img" />
         </div>
         <h1 className="auth-title">Connexion</h1>
         <p className="auth-subtitle">Accédez à votre tableau de bord</p>
