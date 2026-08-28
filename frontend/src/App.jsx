@@ -10,6 +10,8 @@ import UploadPage from "./pages/UploadPage.jsx";
 import ReportsPage from "./pages/ReportsPage.jsx";
 import AnalyticsPage from "./pages/AnalyticsPage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
+import AdminSettingsPage from "./pages/AdminSettingsPage.jsx";
+import AdminRoute from "./components/AdminRoute.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 
 function App() {
@@ -23,6 +25,7 @@ function App() {
           <Route path="/upload" element={<Layout><ProtectedRoute><UploadPage /></ProtectedRoute></Layout>} />
           <Route path="/reports" element={<Layout><ProtectedRoute><ReportsPage /></ProtectedRoute></Layout>} />
           <Route path="/analytics" element={<Layout><ProtectedRoute><AnalyticsPage /></ProtectedRoute></Layout>} />
+          <Route path="/admin-settings" element={<Layout><AdminRoute><AdminSettingsPage /></AdminRoute></Layout>} />
           <Route path="/dashboard/:id" element={<DashboardPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

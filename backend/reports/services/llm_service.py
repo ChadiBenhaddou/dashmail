@@ -1,17 +1,19 @@
 import json
-import os
 import re
 import time
 
 import openai
 
+from settings_app.config import get_llm_config
+
 
 def call_llm(system_prompt, user_prompt, max_retries=3):
+    cfg = get_llm_config()
     client = openai.OpenAI(
-        api_key=os.getenv("LLM_API_KEY", "missing"),
-        base_url=os.getenv("LLM_API_BASE_URL", "https://api.openai.com/v1"),
+        api_key=cfg["api_key"],
+        base_url=cfg["base_url"],
     )
-    model = os.getenv("LLM_MODEL", "gpt-4o")
+    model = cfg["model"]
 
     last_exc = None
     for attempt in range(max_retries):

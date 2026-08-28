@@ -110,3 +110,23 @@ export async function getReports(params = {}) {
 export async function getStats() {
   return authFetch(`${BASE_URL}/api/stats/`);
 }
+
+export async function getSettings() {
+  return authFetch(`${BASE_URL}/api/admin/settings/`);
+}
+
+export async function updateSettings(payload) {
+  const tokens = getTokens();
+  const headers = { "Content-Type": "application/json" };
+  if (tokens?.access) headers["Authorization"] = `Bearer ${tokens.access}`;
+  const res = await fetch(`${BASE_URL}/api/admin/settings/`, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || err.detail || `Erreur ${res.status}`);
+  }
+  return res.json();
+}

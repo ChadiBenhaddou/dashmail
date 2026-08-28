@@ -27,6 +27,9 @@ export default function Header() {
       ? [
           { to: "/reports", label: "Rapports" },
           { to: "/analytics", label: "Stats" },
+          ...(user?.is_staff || user?.is_superuser
+            ? [{ to: "/admin-settings", label: "Config" }]
+            : []),
         ]
       : []),
   ];

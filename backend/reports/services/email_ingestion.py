@@ -7,6 +7,8 @@ from email.header import decode_header
 
 from django.conf import settings
 
+from settings_app.config import get_imap_config
+
 logger = logging.getLogger(__name__)
 
 ALLOWED_EXTENSIONS = {".csv", ".xlsx", ".xls"}
@@ -27,12 +29,7 @@ def _decode_header_value(value):
 
 
 def _get_email_config():
-    return {
-        "host": os.environ.get("EMAIL_IMAP_HOST", ""),
-        "port": int(os.environ.get("EMAIL_IMAP_PORT", "993")),
-        "user": os.environ.get("EMAIL_IMAP_USER", ""),
-        "password": os.environ.get("EMAIL_IMAP_PASSWORD", ""),
-    }
+    return get_imap_config()
 
 
 def _is_valid_attachment(filename):

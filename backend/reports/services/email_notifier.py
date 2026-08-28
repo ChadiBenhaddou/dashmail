@@ -1,5 +1,12 @@
-from django.core.mail import send_mail
 from django.conf import settings
+from django.core.mail import send_mail
+
+from settings_app.config import get_smtp_config
+
+
+def _get_from_email():
+    from_email = get_smtp_config().get("from_email")
+    return from_email or getattr(settings, "EMAIL_FROM", "reports@example.com")
 
 
 def send_success_email(report):
@@ -26,7 +33,7 @@ Dashbail
         send_mail(
             subject=subject,
             message=message,
-            from_email=settings.EMAIL_FROM,
+            from_email=_get_from_email(),
             recipient_list=[report.sender_email],
             fail_silently=True,
         )
@@ -53,7 +60,7 @@ Dashbail
         send_mail(
             subject=subject,
             message=message,
-            from_email=settings.EMAIL_FROM,
+            from_email=_get_from_email(),
             recipient_list=[report.sender_email],
             fail_silently=True,
         )

@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "accounts",
     "reports",
+    "settings_app",
 ]
 
 MIDDLEWARE = [
