@@ -18,11 +18,31 @@ vos données et créer des dashboards professionnels avec graphiques, KPIs et in
 | API Docs | drf-spectacular (Swagger/OpenAPI) |
 | Conteneurisation | Docker + docker-compose |
 
+## Choix du backend : Django (et non Laravel)
+
+Le cahier des charges initial envisageait un backend **Laravel (PHP)**. Le projet
+a été implémenté en **Django (Python)** pour les raisons suivantes :
+
+- **Écosystème data natif** — l'analyse de CSV/Excel repose lourdement sur
+  **pandas** + **openpyxl**, bien plus aboutis en Python et intégrés en première
+  classe avec Django.
+- **Files d'attente asynchrones** — **Celery + Redis** fournissent le traitement
+  asynchrone (parsing → analyse LLM → génération) demandé, équivalent fonctionnel
+  des files de messages Laravel.
+- **Intégration d'API tierces** — OpenAI, SMTP et IMAP s'intègrent aussi
+  simplement qu'en Laravel.
+- **API REST** — **Django REST Framework** produit une API typée, documentée
+  (Swagger via drf-spectacular) et sécurisée (JWT).
+
+Le frontend (React + Recharts) et l'architecture générale (queues asynchrones,
+API tierce, SaaS sans compte) correspondent exactement au cahier des charges ;
+seul le langage du backend change, avec des bénéfices sur le traitement des données.
+
 ## Fonctionnalités
 
 ### Utilisateur
 - **Upload drag-and-drop** — Uploadez vos CSV/XLSX directement depuis l'interface
-- **Ingestion par email** — Envoyez vos fichiers en pièce jointe, le dashboard est créé automatiquement
+- **Ingestion par email** — Envoyez vos fichiers en pièce jointe, le dashboard est créé automatiquement (polling automatique de la boîte mail toutes les 2 min via Celery beat, sans compte requis)
 - **Dashboard interactif** — Graphiques Recharts (bar, line, pie), KPIs animés, insights IA
 - **Statut temps réel** — Polling automatique pendant le traitement (parsing → analyse → génération)
 - **Export PDF** — Téléchargez vos rapports en PDF
@@ -38,7 +58,7 @@ vos données et créer des dashboards professionnels avec graphiques, KPIs et in
 - **Rate limiting** — 100 requêtes/heure (anon), 1000/heure (auth)
 - **Cache Redis** — Dashboard mis en cache 1h
 - **LLM Fallback** — Si OpenAI échoue, analyse heuristique automatique
-- **32 tests** — Auth, parsing, cleaning, charts, PDF, vues
+- **42 tests** — Auth, parsing, cleaning, charts, PDF, vues, settings
 
 ## Installation locale
 
@@ -103,6 +123,7 @@ vos données et créer des dashboards professionnels avec graphiques, KPIs et in
 | `/api/dashboard/<uuid>/` | GET | Non | Données du dashboard |
 | `/api/dashboard/<uuid>/pdf/` | GET | Non | Télécharger le PDF |
 | `/api/stats/` | GET | Oui | Statistiques d'utilisation |
+| `/api/admin/settings/` | GET/PUT | Admin | Configuration LLM/email (admin) |
 | `/api/docs/` | GET | Non | Swagger UI |
 | `/admin/` | GET | Admin | Interface d'administration |
 
@@ -119,6 +140,10 @@ vos données et créer des dashboards professionnels avec graphiques, KPIs et in
 | `LLM_API_KEY` | Clé API OpenAI | — |
 | `EMAIL_HOST` | Serveur SMTP | — |
 | `EMAIL_IMAP_HOST` | Serveur IMAP (ingestion) | — |
+| `EMAIL_IMAP_PORT` | Port IMAP (ingestion) | `993` |
+| `EMAIL_IMAP_USER` | Utilisateur IMAP (ingestion) | — |
+| `EMAIL_IMAP_PASSWORD` | Mot de passe IMAP (ingestion) | — |
+| `EMAIL_POLL_INTERVAL_SECONDS` | Intervalle de polling email (sec) | `120` |
 | `FRONTEND_URL` | URL du frontend | `http://localhost:5173` |
 
 ## Structure du projet
@@ -127,14 +152,14 @@ vos données et créer des dashboards professionnels avec graphiques, KPIs et in
 .
 ├── backend/
 │   ├── accounts/          # Auth JWT (register, login, me)
-│   ├── config/            # Settings, URLs, Celery
+│   ├── config/            # Settings, URLs, Celery (worker + beat)
 │   ├── reports/
 │   │   ├── management/commands/
 │   │   ├── services/      # Parser, cleaner, charts, LLM, PDF, email, cache
-│   │   ├── tests/         # 32 tests
+│   │   ├── tests/         # 42 tests
 │   │   ├── models.py
 │   │   ├── views.py       # Dashboard, Upload, Stats, PDF
-│   │   ├── tasks.py       # Celery pipeline
+│   │   ├── tasks.py       # Celery pipeline + ingestion email périodique
 │   │   └── urls.py
 │   └── requirements.txt
 ├── frontend/

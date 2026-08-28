@@ -1,12 +1,31 @@
+import logging
+
 from django.conf import settings
 from django.core.mail import send_mail
 
 from settings_app.config import get_smtp_config
 
+logger = logging.getLogger(__name__)
+
+EMAIL_FROM_DEFAULT = "reports@example.com"
+
 
 def _get_from_email():
     from_email = get_smtp_config().get("from_email")
-    return from_email or getattr(settings, "EMAIL_FROM", "reports@example.com")
+    return from_email or getattr(settings, "EMAIL_FROM", EMAIL_FROM_DEFAULT)
+
+
+def _send(subject, message, recipient):
+    try:
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=_get_from_email(),
+            recipient_list=[recipient],
+            fail_silently=True,
+        )
+    except Exception:
+        logger.exception("Echec de l'envoi de l'email a %s (sujet: %s)", recipient, subject)
 
 
 def send_success_email(report):
@@ -29,16 +48,7 @@ Qualité des données : {report.data_quality_score or 'N/A'}/100
 Cordialement,
 Dashbail
 """
-    try:
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=_get_from_email(),
-            recipient_list=[report.sender_email],
-            fail_silently=True,
-        )
-    except Exception:
-        pass  # Don't fail the pipeline if email fails
+    _send(subject, message, report.sender_email)
 
 
 def send_failure_email(report):
@@ -56,13 +66,4 @@ Vous pouvez réessayer en envoyant à nouveau votre fichier par email.
 Cordialement,
 Dashbail
 """
-    try:
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=_get_from_email(),
-            recipient_list=[report.sender_email],
-            fail_silently=True,
-        )
-    except Exception:
-        pass
+    _send(subject, message, report.sender_email)

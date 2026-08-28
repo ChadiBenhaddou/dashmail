@@ -87,6 +87,34 @@ services:
       redis:
         condition: service_healthy
 
+  celery_beat:
+    build: ./backend
+    container_name: dashbail_celery_beat
+    command: celery -A config beat -l info
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.dev
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-dev-only-secret-key}
+      DJANGO_DEBUG: "true"
+      POSTGRES_DB: ${POSTGRES_DB:-reports}
+      POSTGRES_USER: ${POSTGRES_USER:-reports}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-reports}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      REDIS_URL: redis://redis:6379/0
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      EMAIL_IMAP_HOST: ${EMAIL_IMAP_HOST:-}
+      EMAIL_IMAP_PORT: ${EMAIL_IMAP_PORT:-993}
+      EMAIL_IMAP_USER: ${EMAIL_IMAP_USER:-}
+      EMAIL_IMAP_PASSWORD: ${EMAIL_IMAP_PASSWORD:-}
+    volumes:
+      - ./backend:/app
+      - media_data:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
   frontend:
     build: ./frontend
     container_name: dashbail_frontend

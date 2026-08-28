@@ -1,2 +1,3 @@
-web: cd backend && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
+web: cd backend && gunicorn config.wsgi:application --bind 0.0.0.0:0$PORT
 worker: cd backend && celery -A config worker -l info
+beat: cd backend && celery -A config beat -l info

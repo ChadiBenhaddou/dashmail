@@ -145,6 +145,29 @@ def process_report(self, report_id):
         return {"status": "failed", "report_id": str(report_id)}
 
 
+@shared_task(name="reports.tasks.check_email_inbox_task")
+def check_email_inbox_task():
+    """Polls the dedicated inbox for CSV/Excel attachments (Celery beat).
+
+    Wraps check_email_inbox so a network/IMAP error never breaks the beat
+    scheduler: the exception is caught, logged, and the task returns the
+    error count instead of raising.
+    """
+    from .services.email_ingestion import check_email_inbox
+
+    try:
+        result = check_email_inbox()
+    except Exception as exc:
+        logger.exception("Email ingestion task failed")
+        return {"processed": 0, "errors": [{"error": str(exc)}]}
+    logger.info(
+        "Email ingestion run: %s report(s) created, %s error(s)",
+        result.get("processed", 0),
+        len(result.get("errors", [])),
+    )
+    return result
+
+
 def _generate_heuristic_insights(parse_result, df):
     import pandas as pd
 

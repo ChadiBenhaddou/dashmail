@@ -135,11 +135,26 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = TIME_ZONE
 
+# Polling automatique de la boite mail (fichiers CSV/Excel entrants).
+EMAIL_POLL_INTERVAL_SECONDS = int(
+    os.environ.get("EMAIL_POLL_INTERVAL_SECONDS", "120")
+)
+CELERY_BEAT_SCHEDULE = {
+    "check-email-inbox": {
+        "task": "reports.tasks.check_email_inbox_task",
+        "schedule": EMAIL_POLL_INTERVAL_SECONDS,
+    },
+}
+
 LLM_API_KEY = os.environ.get("LLM_API_KEY", "")
 
-EMAIL_BACKEND = os.environ.get(
-    "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
+# Backend SMTP des que l'hote est renseigne (sinon console pour le dev).
+_default_email_backend = (
+    "django.core.mail.backends.smtp.EmailBackend"
+    if os.environ.get("EMAIL_HOST")
+    else "django.core.mail.backends.console.EmailBackend"
 )
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", _default_email_backend)
 EMAIL_HOST = os.environ.get("EMAIL_HOST", "")
 EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")

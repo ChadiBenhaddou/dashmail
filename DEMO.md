@@ -103,7 +103,8 @@
 4. **Auth JWT** — Sécurité des données avec tokens
 5. **API Swagger** — Documentation automatique
 6. **Fallback intelligent** — LLM + heuristiques pour la robustesse
-7. **32 tests** — Qualité logicielle
+7. **42 tests** — Qualité logicielle
 8. **Docker** — Déploiement containerisé
-9. **Dark mode** — UX moderne
-10. **Responsive** — Compatible mobile/tablette
+9. **Flux email sans compte** — Ingestion IMAP auto (Celery beat) + renvoi du lien par SMTP
+10. **Dark mode** — UX moderne
+11. **Responsive** — Compatible mobile/tablette

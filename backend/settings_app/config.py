@@ -68,10 +68,15 @@ def apply_settings_to_django():
 
     A appeler dans AppConfig.ready(). django.core.mail lit ces valeurs
     au moment de l'envoi, donc les changements prennent effet sans
-    redemarrer le worker (relu a chaque send_mail).
+    redemarrer le worker (relu a chaque send_mail). Quand un hote SMTP
+    est configure, on bascule aussi le backend de 'console' vers un
+    vrai envoi SMTP.
     """
     smtp = get_smtp_config()
     if smtp["host"]:
+        django_settings.EMAIL_BACKEND = (
+            "django.core.mail.backends.smtp.EmailBackend"
+        )
         django_settings.EMAIL_HOST = smtp["host"]
         django_settings.EMAIL_PORT = smtp["port"]
         django_settings.EMAIL_HOST_USER = smtp["user"]

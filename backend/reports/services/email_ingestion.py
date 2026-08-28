@@ -4,6 +4,7 @@ import logging
 import os
 import tempfile
 from email.header import decode_header
+from email.utils import parseaddr
 
 from django.conf import settings
 
@@ -70,7 +71,7 @@ def check_email_inbox():
                 msg = email.message_from_bytes(raw_email)
 
                 subject = _decode_header_value(msg.get("Subject", ""))
-                sender = msg.get("From", "")
+                sender = parseaddr(_decode_header_value(msg.get("From", "")))[1] or msg.get("From", "").strip()
 
                 has_valid_attachment = False
 
