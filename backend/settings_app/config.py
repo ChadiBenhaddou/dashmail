@@ -50,6 +50,10 @@ def get_smtp_config():
             get_setting("email_use_tls", "EMAIL_USE_TLS", "true")
         ).lower()
         in ("true", "1", "yes", "on"),
+        "use_ssl": str(
+            get_setting("email_use_ssl", "EMAIL_USE_SSL", "false")
+        ).lower()
+        in ("true", "1", "yes", "on"),
         "from_email": get_setting("email_from", "EMAIL_FROM", ""),
     }
 
@@ -82,6 +86,7 @@ def apply_settings_to_django():
         django_settings.EMAIL_HOST_USER = smtp["user"]
         django_settings.EMAIL_HOST_PASSWORD = smtp["password"]
         django_settings.EMAIL_USE_TLS = smtp["use_tls"]
+        django_settings.EMAIL_USE_SSL = smtp["use_ssl"]
     if smtp["from_email"]:
         django_settings.EMAIL_FROM = smtp["from_email"]
 

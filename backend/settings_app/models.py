@@ -20,6 +20,7 @@ class PlatformSetting(models.Model):
     email_host_user = models.CharField(max_length=255, blank=True, default="")
     email_host_password = models.TextField(blank=True, default="")
     email_use_tls = models.BooleanField(default=True)
+    email_use_ssl = models.BooleanField(default=False)
     email_from = models.EmailField(blank=True, default="")
 
     # IMAP - ingestion des fichiers par email
