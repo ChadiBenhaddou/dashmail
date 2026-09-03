@@ -32,6 +32,10 @@ def send_success_email(report):
     """Send dashboard link email after successful report generation."""
     subject = f"Votre rapport '{report.title}' est prêt"
     dashboard_url = f"{settings.FRONTEND_URL}/dashboard/{report.dashboard_link}"
+
+    llm = report.llm_insights if isinstance(report.llm_insights, dict) else {}
+    exec_summary = llm.get("executive_summary") or llm.get("summary") or ""
+
     message = f"""
 Bonjour,
 
@@ -44,7 +48,15 @@ Ce lien est accessible sans compte. Il est valide pendant 7 jours.
 
 Lignes analysées : {report.row_count or 'N/A'}
 Qualité des données : {report.data_quality_score or 'N/A'}/100
+"""
 
+    if exec_summary:
+        message += f"""
+Synthèse IA :
+{exec_summary}
+"""
+
+    message += """
 Cordialement,
 Dashbail
 """

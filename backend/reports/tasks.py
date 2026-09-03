@@ -103,7 +103,9 @@ def process_report(self, report_id):
         report.save(update_fields=["cleaning_log", "data_quality_score"])
 
         # 4. Build LLM prompt
-        system_prompt, user_prompt = build_analysis_prompt(parse_result)
+        system_prompt, user_prompt = build_analysis_prompt(
+            parse_result, report.custom_prompt
+        )
 
         # 5. Call LLM
         try:
@@ -121,11 +123,21 @@ def process_report(self, report_id):
         charts_config = generate_charts_config(cleaned_df, llm_response)
         report.charts_config = charts_config
 
+        # 6b. Compute real KPIs + dataset profile
+        from .services.dataset_profile import build_dashboard_profile
+        from .services.kpi_generator import compute_kpis
+
+        kpi_config = llm_response.get("kpis", []) if isinstance(llm_response, dict) else []
+        report.kpi_config = kpi_config
+        report.computed_kpis = compute_kpis(cleaned_df, kpi_config)
+        report.dashboard_profile = build_dashboard_profile(cleaned_df)
+
         # 7. Save everything
         report.status = Report.Status.COMPLETED
         report.processed_at = dj_timezone.now()
         report.save(update_fields=[
             "status", "processed_at", "charts_config", "llm_insights",
+            "kpi_config", "computed_kpis", "dashboard_profile",
         ])
 
         logger.info("Report %s processed successfully", report_id)
@@ -269,6 +281,10 @@ def _generate_heuristic_insights(parse_result, df):
         })
 
     return {
+        "executive_summary": "Synthèse générée par règles statistiques : le jeu de données a été "
+        "automatiquement nettoyé et profilé. Les indicateurs ci-dessous reflètent les agrégations "
+        "principales (totaux, moyennes et répartitions).",
+        "overall_sentiment": "neutral",
         "visualizations": visualizations,
         "insights": insights if insights else [{"title": "Analyse basique", "description": "Données analysées automatiquement.", "sentiment": "neutral"}],
         "summary": "Analyse heuristique (LLM non disponible). Les insights sont basés sur des règles statistiques de base.",

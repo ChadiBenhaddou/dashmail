@@ -44,6 +44,59 @@ def generate_report_pdf(report):
     score = report.data_quality_score or 0
     title = report.title or "Rapport d'analyse"
 
+    insights_obj = report.llm_insights if isinstance(report.llm_insights, dict) else {}
+    exec_summary = insights_obj.get("executive_summary") or insights_obj.get("summary") or ""
+    exec_html = ""
+    if exec_summary:
+        exec_html = """
+        <div style="margin-bottom:20px; padding:12px 14px; background:#EEF2FF; border-left:3px solid #4F46E5; border-radius:4px;">
+            <strong style="font-size:12px; color:#4F46E5;">Synth&#232;se ex&#233;cutive</strong>
+            <p style="font-size:11px; color:#374151; margin:6px 0 0;">%s</p>
+        </div>
+        """ % exec_summary.replace("\n", "<br/>")
+
+    kpis_html = ""
+    computed = report.computed_kpis if isinstance(report.computed_kpis, list) else []
+    if computed:
+        rows = "".join(
+            "<tr><td>%s</td><td style='text-align:right;'>%s</td></tr>"
+            % (k.get("label", ""), k.get("value", ""))
+            for k in computed
+        )
+        kpis_html = """
+        <h2>Indicateurs cl&#233;s</h2>
+        <table style="width:100%%; border-collapse:collapse; font-size:11px;">
+            <tr style="background:#F3F4F6;">
+                <th style="padding:6px 10px; text-align:left; border-bottom:1px solid #D1D5DB;">Indicateur</th>
+                <th style="padding:6px 10px; text-align:right; border-bottom:1px solid #D1D5DB;">Valeur</th>
+            </tr>
+            %s
+        </table>
+        """ % rows
+
+    profile_html = ""
+    profile = report.dashboard_profile if isinstance(report.dashboard_profile, dict) else {}
+    numeric_cols = profile.get("numeric_columns", [])
+    if numeric_cols:
+        rows = "".join(
+            "<tr><td>%s</td><td style='text-align:right;'>%s</td><td style='text-align:right;'>%s</td><td style='text-align:right;'>%s</td><td style='text-align:right;'>%s</td></tr>"
+            % (c.get("name", ""), c.get("min", ""), c.get("max", ""), c.get("mean", ""), c.get("sum", ""))
+            for c in numeric_cols
+        )
+        profile_html = """
+        <h2>Profil du jeu de donn&#233;es</h2>
+        <table style="width:100%%; border-collapse:collapse; font-size:11px;">
+            <tr style="background:#F3F4F6;">
+                <th style="padding:6px 10px; text-align:left; border-bottom:1px solid #D1D5DB;">Colonne</th>
+                <th style="padding:6px 10px; text-align:right; border-bottom:1px solid #D1D5DB;">Min</th>
+                <th style="padding:6px 10px; text-align:right; border-bottom:1px solid #D1D5DB;">Max</th>
+                <th style="padding:6px 10px; text-align:right; border-bottom:1px solid #D1D5DB;">Moyenne</th>
+                <th style="padding:6px 10px; text-align:right; border-bottom:1px solid #D1D5DB;">Somme</th>
+            </tr>
+            %s
+        </table>
+        """ % rows
+
     html = """<!DOCTYPE html>
     <html>
     <head>
@@ -67,6 +120,12 @@ def generate_report_pdf(report):
             Qualit&#233;: %s/100
         </div>
 
+        %s
+
+        %s
+
+        %s
+
         <h2>Graphiques</h2>
         %s
 
@@ -82,6 +141,9 @@ def generate_report_pdf(report):
         report.row_count or 0,
         report.column_count or 0,
         int(score),
+        exec_html,
+        kpis_html,
+        profile_html,
         charts_html if charts_html else '<p style="font-size:11px; color:#9CA3AF;">Aucun graphique disponible.</p>',
         insights_html if insights_html else '<p style="font-size:11px; color:#9CA3AF;">Aucune analyse disponible.</p>',
     )
