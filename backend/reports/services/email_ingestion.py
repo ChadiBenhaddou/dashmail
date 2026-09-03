@@ -38,6 +38,42 @@ def _is_valid_attachment(filename):
     return ext in ALLOWED_EXTENSIONS
 
 
+def _extract_body(msg):
+    """Extract and clean plain-text body of an email message."""
+    body_parts = []
+    for part in msg.walk():
+        if part.get_content_type() == "text/plain":
+            payload = part.get_payload(decode=True)
+            if not payload:
+                continue
+            try:
+                text = payload.decode(part.get_content_charset() or "utf-8", errors="replace")
+            except Exception:
+                text = payload.decode("utf-8", errors="replace")
+            body_parts.append(text.strip())
+
+    text = "\n".join(p for p in body_parts if p).strip()
+    if not text:
+        return ""
+
+    # Remove quoted reply (lines starting with '>') and common break markers.
+    lines = text.splitlines()
+    cleaned = []
+    for line in lines:
+        stripped = line.strip()
+        lowered = stripped.lower()
+        # A signature block ('--' alone on a line) terminates the message.
+        if stripped == "--" or stripped.startswith("-- "):
+            break
+        if stripped.startswith(">"):
+            continue
+        if lowered.startswith("répondre à ce message") \
+                or lowered.startswith("re: ") or lowered.startswith("répondre"):
+            continue
+        cleaned.append(line)
+    return "\n".join(cleaned).strip()
+
+
 def check_email_inbox():
     from reports.models import DataFile, Report
 
@@ -72,6 +108,7 @@ def check_email_inbox():
 
                 subject = _decode_header_value(msg.get("Subject", ""))
                 sender = parseaddr(_decode_header_value(msg.get("From", "")))[1] or msg.get("From", "").strip()
+                body_prompt = _extract_body(msg)
 
                 has_valid_attachment = False
 
@@ -127,6 +164,7 @@ def check_email_inbox():
                         status=Report.Status.PENDING,
                         sender_email=sender,
                         file_size=len(payload),
+                        custom_prompt=body_prompt,
                     )
 
                     with open(tmp_path, "rb") as f:

@@ -36,19 +36,30 @@ async function authFetch(url, options = {}) {
     });
     if (refreshRes.ok) {
       const data = await refreshRes.json();
-      saveTokens({ access: data.access, refresh: tokens.refresh });
+      saveTokens({
+        access: data.access,
+        refresh: data.refresh || tokens.refresh,
+      });
       headers["Authorization"] = `Bearer ${data.access}`;
       const retryRes = await fetch(url, { ...options, headers });
-      if (!retryRes.ok) throw new Error(`Erreur ${retryRes.status}`);
+      if (!retryRes.ok) {
+        const err = new Error(`Erreur ${retryRes.status}`);
+        err.status = retryRes.status;
+        throw err;
+      }
       return retryRes.json();
     }
     clearTokens();
     window.location.href = "/login";
-    throw new Error("Session expirée");
+    const se = new Error("Session expirée");
+    se.status = 401;
+    throw se;
   }
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || err.detail || `Erreur ${res.status}`);
+    const e = new Error(err.error || err.detail || `Erreur ${res.status}`);
+    e.status = res.status;
+    throw e;
   }
   return res.json();
 }
@@ -79,11 +90,12 @@ export async function getReport(id) {
   return authFetch(`${BASE_URL}/api/dashboard/${id}/`);
 }
 
-export async function uploadFile(file, title) {
+export async function uploadFile(file, title, prompt) {
   const tokens = getTokens();
   const formData = new FormData();
   formData.append("file", file);
   if (title) formData.append("title", title);
+  if (prompt) formData.append("custom_prompt", prompt);
 
   const headers = {};
   if (tokens?.access) {
@@ -97,7 +109,9 @@ export async function uploadFile(file, title) {
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || `Erreur ${res.status}`);
+    const e = new Error(err.error || `Erreur ${res.status}`);
+    e.status = res.status;
+    throw e;
   }
   return res.json();
 }

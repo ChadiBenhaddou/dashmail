@@ -8,6 +8,8 @@ import KPICard from "../components/KPICard.jsx";
 import ChartRenderer from "../components/ChartRenderer.jsx";
 import InsightList from "../components/InsightList.jsx";
 import DataQuality from "../components/DataQuality.jsx";
+import ExecutiveSummary from "../components/ExecutiveSummary.jsx";
+import DatasetOverview from "../components/DatasetOverview.jsx";
 
 function DashboardPage() {
   const { id } = useParams();
@@ -39,7 +41,15 @@ function DashboardPage() {
         }
       })
       .catch((err) => {
-        if (isProcessing) {
+        if (err.status === 400) {
+          if (pollingRef.current) {
+            clearInterval(pollingRef.current);
+            pollingRef.current = null;
+          }
+          setError(err);
+          setProcessing(false);
+          setLoading(false);
+        } else if (isProcessing) {
           setProcessing(true);
           setLoading(false);
         } else {
@@ -102,7 +112,21 @@ function DashboardPage() {
       </header>
 
       <main className="dashboard" role="main">
-        <ReportHeader report={report} />
+        <ReportHeader report={report.report} />
+
+        {report.report?.custom_prompt && (
+          <section className="card prompt-card" aria-label="Demande specifique">
+            <div className="prompt-card-header">
+              <span className="prompt-card-title">Votre demande</span>
+            </div>
+            <p className="prompt-card-text">{report.report.custom_prompt}</p>
+          </section>
+        )}
+
+        <ExecutiveSummary
+          summary={report.executive_summary}
+          sentiment={report.overall_sentiment}
+        />
 
         <section className="kpi-grid" aria-label="Indicateurs cles">
           {report.kpis?.map((kpi, i) => (
@@ -113,15 +137,30 @@ function DashboardPage() {
         <section className="charts-grid" aria-label="Graphiques">
           {report.charts?.map((chart, i) => (
             <div key={i} className="card">
-              <ChartRenderer {...chart} />
+              <ChartRenderer
+                type={chart.type}
+                data={chart.data}
+                title={chart.title}
+                xAxisKey={chart.xAxisKey}
+                yAxisKey={chart.yAxisKey}
+                colors={chart.colors}
+                chart={chart}
+              />
             </div>
           ))}
         </section>
 
         <section className="bottom-grid" aria-label="Analyses et qualite">
           {report.insights && <InsightList insights={report.insights} />}
-          {report.data_quality && <DataQuality {...report.data_quality} />}
+          {report.data_quality && (
+            <DataQuality
+              score={report.data_quality.score}
+              cleaningLog={report.data_quality.cleaning_log}
+            />
+          )}
         </section>
+
+        <DatasetOverview profile={report.dashboard_profile} />
       </main>
 
       <footer className="dashboard-footer" role="contentinfo">
@@ -129,9 +168,9 @@ function DashboardPage() {
           Genere automatiquement par dashbail
         </p>
         <nav className="dashboard-footer-links" aria-label="Actions">
-          {report.download_url && (
-            <a href={report.download_url} download>
-              Telecharger
+          {report.report?.pdf_url && (
+            <a href={report.report.pdf_url} target="_blank" rel="noopener noreferrer">
+              Telecharger le PDF
             </a>
           )}
           <span className="footer-sep" aria-hidden="true">

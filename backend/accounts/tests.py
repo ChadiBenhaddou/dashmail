@@ -108,3 +108,20 @@ class AuthMeTest(TestCase):
     def test_me_unauthenticated(self):
         response = self.client.get("/api/auth/me/")
         self.assertEqual(response.status_code, 401)
+
+
+class AuthRefreshTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user("testuser", "test@example.com", "TestPass123!")
+
+    def test_refresh_returns_new_access_token(self):
+        from rest_framework_simplejwt.tokens import RefreshToken
+        refresh = str(RefreshToken.for_user(self.user))
+        response = self.client.post(
+            "/api/auth/token/refresh/",
+            json.dumps({"refresh": refresh}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("access", response.json())

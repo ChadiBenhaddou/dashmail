@@ -5,6 +5,7 @@ import { uploadFile } from "../services/api.js";
 export default function UploadPage() {
   const [file, setFile] = useState(null);
   const [title, setTitle] = useState("");
+  const [prompt, setPrompt] = useState("");
   const [dragActive, setDragActive] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -49,7 +50,7 @@ export default function UploadPage() {
     setUploading(true);
     setError("");
     try {
-      const res = await uploadFile(file, title);
+      const res = await uploadFile(file, title, prompt);
       navigate(`/dashboard/${res.dashboard_link}`, {
         state: { processing: true },
       });
@@ -148,6 +149,17 @@ export default function UploadPage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Ex: Ventes Q1 2024"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="prompt">Instructions / demandes sp&eacute;cifiques</label>
+            <textarea
+              id="prompt"
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="Ex: comparez les revenus par r&eacute;gion, montrez la r&eacute;partition des produits en camembert, calculez le total des ventes par mois..."
+              rows={4}
             />
           </div>
 

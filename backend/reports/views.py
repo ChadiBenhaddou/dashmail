@@ -46,6 +46,7 @@ class UploadView(APIView):
             )
 
         title = request.data.get("title", "").strip() or file.name.rsplit(".", 1)[0]
+        custom_prompt = request.data.get("custom_prompt", "").strip()
 
         report = Report.objects.create(
             title=title,
@@ -53,6 +54,7 @@ class UploadView(APIView):
             source_file=file,
             file_size=file.size,
             status=Report.Status.PENDING,
+            custom_prompt=custom_prompt,
         )
 
         from reports.models import DataFile
@@ -107,6 +109,8 @@ class DashboardView(APIView):
 
         kpis = _generate_kpis(report)
 
+        llm_insights = report.llm_insights if isinstance(report.llm_insights, dict) else {}
+
         payload = {
             "report": {
                 "id": str(report.id),
@@ -125,6 +129,12 @@ class DashboardView(APIView):
                     if report.source_file
                     else None
                 ),
+                "pdf_url": (
+                    request.build_absolute_uri(
+                        f"/api/dashboard/{report.dashboard_link}/pdf/"
+                    )
+                ),
+                "custom_prompt": report.custom_prompt,
                 "created_at": report.created_at.isoformat(),
                 "processed_at": (
                     report.processed_at.isoformat()
@@ -133,12 +143,15 @@ class DashboardView(APIView):
                 ),
             },
             "charts": report.charts_config or [],
-            "insights": (report.llm_insights or {}).get("insights", []) if isinstance(report.llm_insights, dict) else (report.llm_insights or []),
+            "insights": llm_insights.get("insights", []),
             "data_quality": {
                 "score": report.data_quality_score,
                 "cleaning_log": report.cleaning_log or {},
             },
-            "kpis": kpis,
+            "kpis": report.computed_kpis if report.computed_kpis else kpis,
+            "executive_summary": llm_insights.get("executive_summary", ""),
+            "overall_sentiment": llm_insights.get("overall_sentiment", "neutral"),
+            "dashboard_profile": report.dashboard_profile or {},
         }
 
         set_cached_dashboard(dashboard_uuid, payload)
